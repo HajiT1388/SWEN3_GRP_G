@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DMSG3.Infrastructure.Migrations
 {
     [DbContext(typeof(DMSG3_DbContext))]
-    [Migration("20250913154930_InitialCreate")]
+    [Migration("20250917155110_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace DMSG3.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("upload_time")
-                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id");
 

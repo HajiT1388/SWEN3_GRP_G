@@ -1,73 +1,73 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\",
+  "WorkspaceRootPath": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\dmsg3_dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\dmsg3_dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dmsg3.rest.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
-      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dmsg3.rest.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|solutionrelative:dmsg3.domain\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dtos\\documentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dtos\\documentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dtos\\documentdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.domain\\entities\\document.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|solutionrelative:dmsg3.domain\\entities\\document.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\migrations\\dmsg3_dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\migrations\\dmsg3_dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\migrations\\20250913154930_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\migrations\\20250913154930_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\dmsg3.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\dmsg3.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\properties\\launchsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.rest\\dmsg3.rest.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\dmsg3_dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\dmsg3_dbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\migrations\\20250917155110_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\migrations\\20250917155110_initialcreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\migrations\\dmsg3_dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\migrations\\dmsg3_dbcontextmodelsnapshot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.domain\\entities\\document.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|solutionrelative:dmsg3.domain\\entities\\document.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dmsg3.rest.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dmsg3.rest.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dmsg3.rest.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
+      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dmsg3.rest.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dockerfile||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dockerfile||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.infrastructure\\dmsg3.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{D643950C-4D93-48B5-8538-CDF286B9CCAA}|DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj|solutionrelative:dmsg3.infrastructure\\dmsg3.infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.rest\\dmsg3.rest.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{A0F3F7DB-2608-4546-BC4F-11EA1641D6E3}|DMSG3.REST\\DMSG3.REST.csproj|solutionrelative:dmsg3.rest\\dmsg3.rest.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|c:\\users\\mosijoon\\desktop\\swen3_grp_g\\dmsg3.domain\\dmsg3.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "AbsoluteMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.domain\\dmsg3.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{BD1AA6A7-899D-45B2-9B78-F6F1EF80263C}|DMSG3.Domain\\DMSG3.Domain.csproj|solutionrelative:dmsg3.domain\\dmsg3.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
@@ -78,87 +78,167 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "DocumentDto.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DTOs\\DocumentDto.cs",
-              "RelativeDocumentMoniker": "DMSG3.REST\\DTOs\\DocumentDto.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DTOs\\DocumentDto.cs",
-              "RelativeToolTip": "DMSG3.REST\\DTOs\\DocumentDto.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAAAAAAA",
+              "DocumentIndex": 7,
+              "Title": "DMSG3_DbContextModelSnapshot.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
+              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
+              "RelativeToolTip": "DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T15:08:00.496Z"
+              "WhenOpened": "2025-09-17T15:56:42.841Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Program.cs",
-              "RelativeDocumentMoniker": "DMSG3.REST\\Program.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Program.cs",
-              "RelativeToolTip": "DMSG3.REST\\Program.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAACsAAAAlAAAAAAAAAA==",
+              "DocumentIndex": 6,
+              "Title": "20250917155110_InitialCreate.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\20250917155110_InitialCreate.cs",
+              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\Migrations\\20250917155110_InitialCreate.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\20250917155110_InitialCreate.cs",
+              "RelativeToolTip": "DMSG3.Infrastructure\\Migrations\\20250917155110_InitialCreate.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T15:01:45.976Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\appsettings.json",
-              "RelativeDocumentMoniker": "DMSG3.REST\\appsettings.json",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\appsettings.json",
-              "RelativeToolTip": "DMSG3.REST\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-13T14:56:28.341Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Class1.cs",
-              "RelativeDocumentMoniker": "DMSG3.Domain\\Class1.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Class1.cs",
-              "RelativeToolTip": "DMSG3.Domain\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T14:29:15.055Z"
+              "WhenOpened": "2025-09-17T15:56:42.162Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 10,
-              "Title": "Document.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Entities\\Document.cs",
-              "RelativeDocumentMoniker": "DMSG3.Domain\\Entities\\Document.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Entities\\Document.cs",
-              "RelativeToolTip": "DMSG3.Domain\\Entities\\Document.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAfAAAA",
+              "Title": "DMSG3.REST",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+              "RelativeDocumentMoniker": "DMSG3.REST\\DMSG3.REST.csproj",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+              "RelativeToolTip": "DMSG3.REST\\DMSG3.REST.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-17T15:22:11.371Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DocumentDto.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DTOs\\DocumentDto.cs",
+              "RelativeDocumentMoniker": "DMSG3.REST\\DTOs\\DocumentDto.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DTOs\\DocumentDto.cs",
+              "RelativeToolTip": "DMSG3.REST\\DTOs\\DocumentDto.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T14:30:47.747Z"
+              "WhenOpened": "2025-09-13T15:08:00.496Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Program.cs",
+              "RelativeDocumentMoniker": "DMSG3.REST\\Program.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Program.cs",
+              "RelativeToolTip": "DMSG3.REST\\Program.cs",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAEcAAABXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T15:01:45.976Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\appsettings.json",
+              "RelativeDocumentMoniker": "DMSG3.REST\\appsettings.json",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\appsettings.json",
+              "RelativeToolTip": "DMSG3.REST\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-13T14:56:28.341Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Document.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Entities\\Document.cs",
+              "RelativeDocumentMoniker": "DMSG3.Domain\\Entities\\Document.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\Entities\\Document.cs",
+              "RelativeToolTip": "DMSG3.Domain\\Entities\\Document.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T14:30:47.747Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "docker-compose.yml",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
               "RelativeDocumentMoniker": "docker-compose.yml",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
               "RelativeToolTip": "docker-compose.yml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
-              "WhenOpened": "2025-09-13T14:52:11.734Z"
+              "WhenOpened": "2025-09-13T14:52:11.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "DMSG3_DbContext.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3_DbContext.cs",
+              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\DMSG3_DbContext.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3_DbContext.cs",
+              "RelativeToolTip": "DMSG3.Infrastructure\\DMSG3_DbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-13T14:38:26.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeDocumentMoniker": "DMSG3.REST\\Dockerfile",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeToolTip": "DMSG3.REST\\Dockerfile",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-17T14:04:03.557Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeDocumentMoniker": "DMSG3.REST\\Dockerfile",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeToolTip": "DMSG3.REST\\Dockerfile",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-17T14:04:13.619Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "launchSettings.json",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Properties\\launchSettings.json",
+              "RelativeDocumentMoniker": "DMSG3.REST\\Properties\\launchSettings.json",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Properties\\launchSettings.json",
+              "RelativeToolTip": "DMSG3.REST\\Properties\\launchSettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-13T15:55:21.345Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 15,
               "Title": "DMSG3.REST.csproj",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
               "RelativeDocumentMoniker": "DMSG3.REST\\DMSG3.REST.csproj",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
               "RelativeToolTip": "DMSG3.REST\\DMSG3.REST.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAOAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -166,11 +246,22 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 1,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeDocumentMoniker": "DMSG3.REST\\Dockerfile",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Dockerfile",
+              "RelativeToolTip": "DMSG3.REST\\Dockerfile",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-09-13T14:53:58.376Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "DMSG3.Infrastructure.csproj",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
               "RelativeDocumentMoniker": "DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
               "RelativeToolTip": "DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAABVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
@@ -178,70 +269,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "DMSG3_DbContext.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3_DbContext.cs",
-              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\DMSG3_DbContext.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3_DbContext.cs",
-              "RelativeToolTip": "DMSG3.Infrastructure\\DMSG3_DbContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-13T14:38:26.157Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "20250913154930_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\20250913154930_InitialCreate.cs",
-              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\Migrations\\20250913154930_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\20250913154930_InitialCreate.cs",
-              "RelativeToolTip": "DMSG3.Infrastructure\\Migrations\\20250913154930_InitialCreate.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T13:47:17.106Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "DMSG3_DbContextModelSnapshot.cs",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
-              "RelativeDocumentMoniker": "DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
-              "RelativeToolTip": "DMSG3.Infrastructure\\Migrations\\DMSG3_DbContextModelSnapshot.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAFAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T13:47:22.027Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DOCKERFILE",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeDocumentMoniker": "DMSG3.REST\\DOCKERFILE",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeToolTip": "DMSG3.REST\\DOCKERFILE",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-09-17T14:04:03.557Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DOCKERFILE",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeDocumentMoniker": "DMSG3.REST\\DOCKERFILE",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeToolTip": "DMSG3.REST\\DOCKERFILE",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-09-17T14:04:13.619Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "DMSG3.REST.http",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.http",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.http",
               "RelativeDocumentMoniker": "DMSG3.REST\\DMSG3.REST.http",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.http",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.http",
               "RelativeToolTip": "DMSG3.REST\\DMSG3.REST.http",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
@@ -249,34 +281,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "DOCKERFILE",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeDocumentMoniker": "DMSG3.REST\\DOCKERFILE",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DOCKERFILE",
-              "RelativeToolTip": "DMSG3.REST\\DOCKERFILE",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-09-13T14:53:58.376Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "launchSettings.json",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Properties\\launchSettings.json",
-              "RelativeDocumentMoniker": "DMSG3.REST\\Properties\\launchSettings.json",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\Properties\\launchSettings.json",
-              "RelativeToolTip": "DMSG3.REST\\Properties\\launchSettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-13T15:55:21.345Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 16,
               "Title": "DMSG3.Domain.csproj",
-              "DocumentMoniker": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
               "RelativeDocumentMoniker": "DMSG3.Domain\\DMSG3.Domain.csproj",
-              "ToolTip": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
               "RelativeToolTip": "DMSG3.Domain\\DMSG3.Domain.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",

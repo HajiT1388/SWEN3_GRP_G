@@ -650,7 +650,10 @@
       "System.Threading.Channels/7.0.0": {},
       "DMSG3.Domain/1.0.0": {
         "runtime": {
-          "DMSG3.Domain.dll": {}
+          "DMSG3.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

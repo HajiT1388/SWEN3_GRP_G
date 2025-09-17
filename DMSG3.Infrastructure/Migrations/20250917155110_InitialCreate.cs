@@ -22,7 +22,7 @@ namespace DMSG3.Infrastructure.Migrations
                     id = table.Column<Guid>(type: "uuid", nullable: false, defaultValueSql: "gen_random_uuid()"),
                     file_name = table.Column<string>(type: "text", nullable: false),
                     file_content = table.Column<string>(type: "text", nullable: false),
-                    upload_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW() AT TIME ZONE 'UTC'")
+                    upload_time = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now()")
                 },
                 constraints: table =>
                 {

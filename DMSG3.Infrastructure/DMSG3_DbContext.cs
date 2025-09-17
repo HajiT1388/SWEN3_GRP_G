@@ -35,9 +35,9 @@ namespace DMSG3.Infrastructure
                    .HasColumnName("file_content")
                    .IsRequired();
 
-                entity.Property(document => document.UploadTime)
-                   .HasColumnName("upload_time")
-                   .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+                entity.Property(d => d.UploadTime)
+                    .HasColumnName("upload_time")
+                    .HasDefaultValueSql("now()");
             });
         }
     }

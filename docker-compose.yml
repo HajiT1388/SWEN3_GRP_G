@@ -9,6 +9,11 @@ services:
       - "5432:5432"
     volumes:
       - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dmsg3 -d dmsg3_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   adminer:
     image: adminer
@@ -20,9 +25,10 @@ services:
       context: .
       dockerfile: DMSG3.REST/Dockerfile
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_URLS: "http://+:8080" 
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
     ports:
       - "8081:8080" #http://localhost:8081/swagger

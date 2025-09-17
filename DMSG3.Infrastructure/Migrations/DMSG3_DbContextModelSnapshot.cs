@@ -45,7 +45,7 @@ namespace DMSG3.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("upload_time")
-                        .HasDefaultValueSql("NOW() AT TIME ZONE 'UTC'");
+                        .HasDefaultValueSql("now()");
 
                     b.HasKey("Id");
 

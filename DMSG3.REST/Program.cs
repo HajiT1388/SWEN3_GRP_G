@@ -5,15 +5,38 @@ using DMSG3.REST.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Bindet Datenbank "Default" für den Connectionstring an
 builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default"),
+        o => o.EnableRetryOnFailure())); // DB noch nicht bereit? NEIN
 
-// Erstellt UI unter /swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+// pgcrypto und Migrs
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<DMSG3_DbContext>();
+    try
+    {
+        db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+    }
+    catch (Exception ex)
+    {
+        app.Logger.LogWarning(ex, "pgcrypto konnte nicht erstellt werden, REST/Program.cs/Z32 (17.09).");
+    }
+
+    db.Database.Migrate();
+}
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseSwagger();
 app.UseSwaggerUI();
