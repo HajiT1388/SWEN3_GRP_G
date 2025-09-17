@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\DMSG3.REST.props" />
+</Project>

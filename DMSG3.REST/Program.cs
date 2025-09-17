@@ -1,42 +1,62 @@
+using Microsoft.EntityFrameworkCore;
+using DMSG3.Domain.Entities;
+using DMSG3.Infrastructure;
+using DMSG3.REST.DTOs;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Bindet Datenbank "Default" für den Connectionstring an
+builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
+    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+
+// Erstellt UI unter /swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+// Health Endpoint http://localhost:port/health
+app.MapGet("/health", () => Results.Ok("healthy"));
 
-app.MapGet("/weatherforecast", () =>
+// API-Gruppe für alle Endpoints, die unter api/ erreichbar sind
+var api = app.MapGroup("/api");
+
+// CRUD-Dokumentendpoints
+// GET api/documents listet alle Dokumente
+api.MapGet("/documents", async (DMSG3_DbContext db)
+        => await db.Documents.ToListAsync());
+
+// GET api/documents/{guid} gibt ein Dokument oder not found 404
+api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db)
+        => await db.Documents.FindAsync(id) is { } d ? Results.Ok(d) : Results.NotFound());
+
+// POST api/documents legt ein neues Dokument an
+api.MapPost("/documents", async (DocumentDto dto, DMSG3_DbContext db) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    // DTO -> Domain Entity
+    var doc = new Document
+    {
+        Id = Guid.NewGuid(), // Primary key
+        FileName = dto.FileName,
+        FileContent = dto.FileContent
+    };
+
+    db.Documents.Add(doc);
+    await db.SaveChangesAsync();
+    return Results.Created($"/api/documents/{doc.Id}", doc); // 201 und Location-Header
+});
+
+// DELETE api/documents/{guid} löscht ein Dokument
+api.MapDelete("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db) =>
+{
+    var doc = await db.Documents.FindAsync(id);
+    if (doc is null) return Results.NotFound();
+    db.Remove(doc);
+    await db.SaveChangesAsync();
+    return Results.NoContent(); // 204, nichts mehr da 
+});
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

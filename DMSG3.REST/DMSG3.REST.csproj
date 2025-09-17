@@ -16,4 +16,12 @@
     <ProjectReference Include="..\DMSG3.Infrastructure\DMSG3.Infrastructure.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="DTOs\" />
+  </ItemGroup>
+
 </Project>

@@ -4,14 +4,14 @@
     "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj": {
+    "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
-        "projectName": "DMSG3.REST",
-        "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+        "projectUniqueName": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
+        "projectName": "DMSG3.Domain",
+        "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj",
         "packagesPath": "C:\\Users\\MosiJoon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\obj\\",
+        "outputPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -49,10 +49,167 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
+        "projectName": "DMSG3.Infrastructure",
+        "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\MosiJoon\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\MosiJoon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Users\\MosiJoon\\Downloads": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj": {
+                "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.1, )"
+            },
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+        "projectName": "DMSG3.REST",
+        "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\DMSG3.REST.csproj",
+        "packagesPath": "C:\\Users\\MosiJoon\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.REST\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\MosiJoon\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Users\\MosiJoon\\Downloads": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj": {
+                "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Domain\\DMSG3.Domain.csproj"
+              },
+              "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\MosiJoon\\Desktop\\SWEN3_GRP_G\\DMSG3.Infrastructure\\DMSG3.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.4, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[9.0.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
