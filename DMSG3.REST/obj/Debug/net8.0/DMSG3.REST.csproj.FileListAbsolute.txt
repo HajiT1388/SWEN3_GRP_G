@@ -159,6 +159,7 @@ C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.CodeAnalysi
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Abstractions.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.Relational.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.Extensions.Caching.Abstractions.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\bin\Debug\net8.0\Microsoft.Extensions.Caching.Memory.dll
@@ -280,3 +281,4 @@ C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\obj\Debug\net8.0\refint\DMSG3.REST.dll
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\obj\Debug\net8.0\DMSG3.REST.pdb
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\obj\Debug\net8.0\DMSG3.REST.genruntimeconfig.cache
 C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\obj\Debug\net8.0\ref\DMSG3.REST.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.REST\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

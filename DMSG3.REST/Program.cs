@@ -5,9 +5,18 @@ using DMSG3.REST.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
-    opt.UseNpgsql(builder.Configuration.GetConnectionString("Default"),
-        o => o.EnableRetryOnFailure())); // DB noch nicht bereit? NEIN
+// wenn test env dann in-memory, sonst normale
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
+        opt.UseInMemoryDatabase("DMSG3_TestDb"));
+}
+else
+{
+    builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
+        opt.UseNpgsql(builder.Configuration.GetConnectionString("Default"),
+            o => o.EnableRetryOnFailure()));
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,16 +32,21 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DMSG3_DbContext>();
-    try
-    {
-        db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
-    }
-    catch (Exception ex)
-    {
-        app.Logger.LogWarning(ex, "pgcrypto konnte nicht erstellt werden, REST/Program.cs/Z32 (17.09).");
-    }
 
-    db.Database.Migrate();
+    // nur bei rel-db migrieren und sql; tests in memory
+    var providerName = db.Database.ProviderName;
+    if (!string.Equals(providerName, "Microsoft.EntityFrameworkCore.InMemory", StringComparison.OrdinalIgnoreCase))
+    {
+        try
+        {
+            db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogWarning(ex, "pgcrypto konnte nicht erstellt werden, REST/Program.cs/Z37 (17.09).");
+        }
+        db.Database.Migrate();
+    }
 }
 
 app.UseSwagger();
@@ -48,38 +62,35 @@ app.MapGet("/health", () => Results.Ok("healthy"));
 var api = app.MapGroup("/api");
 
 // CRUD-Dokumentendpoints
-// GET api/documents listet alle Dokumente
 api.MapGet("/documents", async (DMSG3_DbContext db)
         => await db.Documents.ToListAsync());
 
-// GET api/documents/{guid} gibt ein Dokument oder not found 404
 api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db)
         => await db.Documents.FindAsync(id) is { } d ? Results.Ok(d) : Results.NotFound());
 
-// POST api/documents legt ein neues Dokument an
 api.MapPost("/documents", async (DocumentDto dto, DMSG3_DbContext db) =>
 {
-    // DTO -> Domain Entity
     var doc = new Document
     {
-        Id = Guid.NewGuid(), // Primary key
+        Id = Guid.NewGuid(),
         FileName = dto.FileName,
         FileContent = dto.FileContent
     };
 
     db.Documents.Add(doc);
     await db.SaveChangesAsync();
-    return Results.Created($"/api/documents/{doc.Id}", doc); // 201 und Location-Header
+    return Results.Created($"/api/documents/{doc.Id}", doc);
 });
 
-// DELETE api/documents/{guid} löscht ein Dokument
 api.MapDelete("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db) =>
 {
     var doc = await db.Documents.FindAsync(id);
     if (doc is null) return Results.NotFound();
     db.Remove(doc);
     await db.SaveChangesAsync();
-    return Results.NoContent(); // 204, nichts mehr da 
+    return Results.NoContent();
 });
 
 app.Run();
+
+public partial class Program { }
