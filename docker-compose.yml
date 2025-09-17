@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   db:
     image: postgres:16-alpine
@@ -13,18 +15,20 @@ services:
   adminer:
     image: adminer
     ports:
-      - "9091:8080" # http://localhost:9091
+      - "9091:8080" #http://localhost:9091
 
   rest:
     build:
-      context: ./src/DMSG3.REST
+      context: .
+      dockerfile: DMSG3.REST/Dockerfile
     depends_on:
       - db
     environment:
       ASPNETCORE_URLS: "http://+:8080"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
     ports:
-      - "8081:8080" # http://localhost:8081/swagger
+      - "8081:8080" #http://localhost:8081/swagger
+    restart: unless-stopped
 
 volumes:
   dbdata:
