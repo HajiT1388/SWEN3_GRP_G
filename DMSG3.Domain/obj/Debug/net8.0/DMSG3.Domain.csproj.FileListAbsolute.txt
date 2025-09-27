@@ -10,3 +10,15 @@ C:\Users\MosiJoon\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain
 C:\Users\MosiJoon\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\refint\DMSG3.Domain.dll
 C:\Users\MosiJoon\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.pdb
 C:\Users\MosiJoon\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\ref\DMSG3.Domain.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\bin\Debug\net8.0\DMSG3.Domain.deps.json
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\bin\Debug\net8.0\DMSG3.Domain.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\bin\Debug\net8.0\DMSG3.Domain.pdb
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.AssemblyInfoInputs.cache
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.AssemblyInfo.cs
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.csproj.CoreCompileInputs.cache
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.sourcelink.json
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\refint\DMSG3.Domain.dll
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\DMSG3.Domain.pdb
+C:\Users\_\Desktop\SWEN3_GRP_G\DMSG3.Domain\obj\Debug\net8.0\ref\DMSG3.Domain.dll
