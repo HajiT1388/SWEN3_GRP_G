@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{7CC20EF3-55E6-477E-ABF3-275E3316913A}|Solution Items{7CC20EF3-55E6-477E-ABF3-275E3316913A}|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C0EE7D17-190A-4F22-9AF1-6E673F92B570}|DMSG3.Tests\\DMSG3.Tests.csproj|c:\\users\\_\\desktop\\swen3_grp_g\\dmsg3.tests\\documentscrudendpointtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C0EE7D17-190A-4F22-9AF1-6E673F92B570}|DMSG3.Tests\\DMSG3.Tests.csproj|solutionrelative:dmsg3.tests\\documentscrudendpointtests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -23,28 +27,39 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "DocumentsCrudEndpointTests.cs",
-              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
-              "RelativeDocumentMoniker": "DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
-              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
-              "RelativeToolTip": "DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-17T21:14:59.992Z",
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
+              "RelativeDocumentMoniker": "docker-compose.yml",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\docker-compose.yml",
+              "RelativeToolTip": "docker-compose.yml",
+              "ViewState": "AgIAABUAAAAAAAAAAAAAAC8AAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2025-09-27T13:28:28.785Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "DMSG3.Tests",
+              "Title": "DocumentsCrudEndpointTests.cs",
+              "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
+              "RelativeDocumentMoniker": "DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
+              "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
+              "RelativeToolTip": "DMSG3.Tests\\DocumentsCrudEndpointTests.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABkAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-17T21:14:59.992Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "DMSG3.Tests.csproj",
               "DocumentMoniker": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DMSG3.Tests.csproj",
               "RelativeDocumentMoniker": "DMSG3.Tests\\DMSG3.Tests.csproj",
               "ToolTip": "C:\\Users\\_\\Desktop\\SWEN3_GRP_G\\DMSG3.Tests\\DMSG3.Tests.csproj",
               "RelativeToolTip": "DMSG3.Tests\\DMSG3.Tests.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-09-17T21:14:56.824Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-17T21:14:56.824Z"
             }
           ]
         }
