@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DMSG3.Infrastructure.Migrations
 {
     [DbContext(typeof(DMSG3_DbContext))]
-    [Migration("20250917155110_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250928141231_InitialBinaryDocuments")]
+    partial class InitialBinaryDocuments
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,15 +34,29 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<string>("FileContent")
+                    b.Property<byte[]>("Content")
                         .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("file_content");
+                        .HasColumnType("bytea")
+                        .HasColumnName("content");
 
-                    b.Property<string>("FileName")
+                    b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("text")
-                        .HasColumnName("file_name");
+                        .HasColumnName("content_type");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("OriginalFileName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("original_file_name");
+
+                    b.Property<long>("SizeBytes")
+                        .HasColumnType("bigint")
+                        .HasColumnName("size_bytes");
 
                     b.Property<DateTime>("UploadTime")
                         .ValueGeneratedOnAdd()
@@ -51,6 +65,9 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasDefaultValueSql("now()");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UploadTime")
+                        .HasDatabaseName("ix_documents_upload_time");
 
                     b.ToTable("documents", "public");
                 });

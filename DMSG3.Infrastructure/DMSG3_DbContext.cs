@@ -17,22 +17,38 @@ namespace DMSG3.Infrastructure
             {
                 entity.ToTable("documents");
 
-                entity.HasKey(document => document.Id);
+                entity.HasKey(d => d.Id);
+
                 entity.Property(d => d.Id)
-                   .HasColumnName("id")
-                   .HasDefaultValueSql("gen_random_uuid()");
+                    .HasColumnName("id")
+                    .HasDefaultValueSql("gen_random_uuid()");
 
-                entity.Property(document => document.FileName)
-                   .HasColumnName("file_name")
-                   .IsRequired();
+                entity.Property(d => d.Name)
+                    .HasColumnName("name")
+                    .IsRequired();
 
-                entity.Property(document => document.FileContent)
-                   .HasColumnName("file_content")
-                   .IsRequired();
+                entity.Property(d => d.OriginalFileName)
+                    .HasColumnName("original_file_name")
+                    .IsRequired();
+
+                entity.Property(d => d.ContentType)
+                    .HasColumnName("content_type")
+                    .IsRequired();
+
+                entity.Property(d => d.SizeBytes)
+                    .HasColumnName("size_bytes")
+                    .IsRequired();
+
+                entity.Property(d => d.Content)
+                    .HasColumnName("content")
+                    .HasColumnType("bytea")
+                    .IsRequired();
 
                 entity.Property(d => d.UploadTime)
                     .HasColumnName("upload_time")
                     .HasDefaultValueSql("now()");
+
+                entity.HasIndex(d => d.UploadTime).HasDatabaseName("ix_documents_upload_time");
             });
         }
     }

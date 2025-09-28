@@ -80,6 +80,14 @@
     loadDocs(listEl);
   }
 
+  function formatBytes(bytes) {
+    if (!bytes && bytes !== 0) return '';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    let i = 0; let v = bytes;
+    while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+    return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
+  }
+
   async function loadDocs(listEl) {
     listEl.innerHTML = '<div style="padding:12px;">Lädt...</div>';
     try {
@@ -97,7 +105,9 @@
       table.innerHTML = `
         <thead>
           <tr>
-            <th>datei</th>
+            <th>name</th>
+            <th>größe</th>
+            <th>typ</th>
             <th>upload</th>
             <th>aktion</th>
           </tr>
@@ -105,15 +115,21 @@
         <tbody>
           ${docs.map(d => {
             const uploaded = d.uploadTime ? new Date(d.uploadTime).toLocaleString() : '—';
-            const name = d.fileName ?? '(ohne Name)';
+            const name = d.name ?? '(ohne Name)';
             const id = d.id;
             const details = id ? `./details.html?id=${encodeURIComponent(id)}` : '#';
+            const dl = id ? `/api/documents/${encodeURIComponent(id)}/download` : '#';
             return `
               <tr>
-                <td><a href="${details}">${name}</a><br/><span class="badge">${id ? id : '—'}</span></td>
+                <td><a href="${details}">${name}</a><br/><span class="badge">${id || '—'}</span></td>
+                <td>${formatBytes(d.sizeBytes)}</td>
+                <td>${d.contentType || '—'}</td>
                 <td>${uploaded}</td>
                 <td>
-                  ${id ? `<button class="btn danger" data-del="${id}">löschen</button>` : ''}
+                  ${id ? `
+                    <a class="btn ghost" href="${dl}" rel="external" target="_blank">download</a>
+                    <button class="btn danger" data-del="${id}">löschen</button>
+                  ` : ''}
                 </td>
               </tr>
             `;
@@ -153,15 +169,15 @@
 
         <h2 class="section-title">Neues Dokument hinzufügen</h2>
 
-        <form id="createForm">
+        <form id="createForm" enctype="multipart/form-data">
           <div class="field">
-            <label class="lbl" for="fileName">Dateiname</label>
-            <input id="fileName" type="text" name="fileName" required placeholder="Dateipfad (TODO: Upload?)" />
+            <label class="lbl" for="docName">Name</label>
+            <input id="docName" type="text" name="name" required placeholder="Dokumentname" />
           </div>
 
           <div class="field">
-            <label class="lbl" for="fileContent">Inhalt</label>
-            <textarea id="fileContent" name="fileContent" rows="8" placeholder="Inhalt?"></textarea>
+            <label class="lbl" for="file">Datei (.pdf oder .txt)</label>
+            <input id="file" type="file" name="file" accept=".pdf,.txt" required />
           </div>
 
           <div class="actions">
@@ -176,29 +192,43 @@
 
     const form = root.querySelector('#createForm');
     const msg = root.querySelector('#msg');
+    const nameInput = root.querySelector('#docName');
+    const fileInput = root.querySelector('#file');
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files && fileInput.files[0];
+      if (file && !nameInput.value.trim()) {
+        const n = file.name.replace(/\.[^.]+$/, '');
+        nameInput.value = n;
+      }
+    });
 
     form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       msg.textContent = 'Wird gespeichert...';
       msg.className = 'msg';
 
-      const fd = new FormData(form);
-      const payload = {
-        fileName: (fd.get('fileName') || '').toString().trim(),
-        fileContent: (fd.get('fileContent') || '').toString()
-      };
-
-      if (!payload.fileName) {
-        msg.textContent = 'Bitte Dateinamen angeben.';
+      const file = fileInput.files && fileInput.files[0];
+      if (!file) {
+        msg.textContent = 'Bitte eine Datei auswählen (.pdf oder .txt).';
+        msg.className = 'msg err';
+        return;
+      }
+      const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
+      if (!['.pdf', '.txt'].includes(ext)) {
+        msg.textContent = 'Es sind nur .pdf und .txt erlaubt.';
         msg.className = 'msg err';
         return;
       }
 
+      const fd = new FormData();
+      fd.append('name', nameInput.value.trim());
+      fd.append('file', file);
+
       try {
         const res = await fetch('/api/documents', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: fd
         });
 
         if (!res.ok) {
@@ -207,8 +237,8 @@
         }
 
         const created = await res.json().catch(() => null);
-
         form.reset();
+
         const detailsLink = created?.id
           ? ` <a class="link" href="./details.html?id=${encodeURIComponent(created.id)}">Details ansehen</a>`
           : '';
@@ -252,23 +282,44 @@
 
       const d = await res.json();
       const uploaded = d.uploadTime ? new Date(d.uploadTime).toLocaleString() : '—';
+      const dlUrl = `/api/documents/${encodeURIComponent(id)}/download`;
+      const inlineUrl = `${dlUrl}?inline=true`;
 
       out.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <h2 class="section-title" style="margin:0;">Details</h2>
           <div class="actions" style="margin:0;">
+            <a class="btn ghost" href="${dlUrl}" rel="external" target="_blank">Download</a>
             <button id="del" class="btn danger">löschen</button>
             <a class="btn ghost" href="./list.html">zur liste</a>
           </div>
         </div>
-        <p><strong>Datei:</strong> ${d.fileName ?? '(ohne Name)'}</p>
-        <p><strong>Id:</strong> <code>${d.id ?? '—'}</code></p>
+        <p><strong>Name:</strong> ${d.name ?? '(ohne Name)'}</p>
+        <p><strong>Original-Dateiname:</strong> ${d.originalFileName ?? '—'}</p>
+        <p><strong>Typ:</strong> ${d.contentType ?? '—'}</p>
+        <p><strong>Größe:</strong> ${formatBytes(d.sizeBytes)}</p>
         <p><strong>Upload:</strong> ${uploaded}</p>
-        <div>
-          <div class="lbl" style="margin-top:10px;">Inhalt</div>
-          <pre>${d.fileContent ?? ''}</pre>
-        </div>
+        <div id="preview" style="margin-top:12px;"></div>
       `;
+
+      const previewEl = root.querySelector('#preview');
+      if (d.contentType && d.contentType.startsWith('text/plain')) {
+        try {
+          const r2 = await fetch(dlUrl);
+          if (r2.ok) {
+            const text = await r2.text();
+            previewEl.innerHTML = `
+              <div class="lbl" style="margin-top:10px;">Inhalt (Vorschau)</div>
+              <pre>${escapeHtml(text)}</pre>
+            `;
+          }
+        } catch {}
+      } else if (d.contentType && d.contentType.includes('pdf')) {
+        previewEl.innerHTML = `
+          <div class="lbl" style="margin-top:10px;">PDF Vorschau</div>
+          <iframe src="${inlineUrl}" style="width:100%;height:70vh;border:1px solid rgba(255,255,255,0.1);border-radius:6px;"></iframe>
+        `;
+      }
 
       root.querySelector('#del').addEventListener('click', async () => {
         if (!confirm('Wirklich löschen?')) return;
@@ -282,6 +333,13 @@
     } catch (e) {
       out.innerHTML = `<p style="color:#ff9b9b;">${e.message || 'Fehler'}</p>`;
     }
+  }
+
+  function escapeHtml(s) {
+    return (s ?? '').toString()
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 
   window.addEventListener('popstate', renderRoute);
