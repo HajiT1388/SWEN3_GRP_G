@@ -33,8 +33,8 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         var d1 = new Document
         {
             Id = Guid.NewGuid(),
-            Name = "alpha",
-            OriginalFileName = "alpha.txt",
+            Name = "yes",
+            OriginalFileName = "yes.txt",
             ContentType = "text/plain; charset=utf-8",
             Content = aBytes,
             SizeBytes = aBytes.LongLength,
@@ -43,8 +43,8 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         var d2 = new Document
         {
             Id = Guid.NewGuid(),
-            Name = "beta",
-            OriginalFileName = "beta.txt",
+            Name = "no",
+            OriginalFileName = "no.txt",
             ContentType = "text/plain; charset=utf-8",
             Content = bBytes,
             SizeBytes = bBytes.LongLength,
@@ -60,8 +60,8 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         var docs = await response.Content.ReadFromJsonAsync<List<DocumentListItemDto>>();
         Assert.NotNull(docs);
         Assert.Equal(2, docs!.Count);
-        Assert.Contains(docs, d => d.Name == "alpha");
-        Assert.Contains(docs, d => d.Name == "beta");
+        Assert.Contains(docs, d => d.Name == "yes");
+        Assert.Contains(docs, d => d.Name == "no");
     }
 
     private static MultipartFormDataContent BuildMultipart(string? name, string fileName, string content, string contentType = "text/plain")
@@ -114,8 +114,8 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         await _factory.ResetAndSeedAsync(new Document
         {
             Id = id,
-            Name = "deleteme",
-            OriginalFileName = "deleteme.txt",
+            Name = "delete",
+            OriginalFileName = "delete.txt",
             ContentType = "text/plain; charset=utf-8",
             Content = bytes,
             SizeBytes = bytes.LongLength,

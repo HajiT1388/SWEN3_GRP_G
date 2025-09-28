@@ -3,6 +3,80 @@
   window.__spaBooted = true;
 
   const root = document.getElementById('app');
+  let cleanup = () => {};
+
+  function createSketchSVG(width, height, radius) {
+    const svg  = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    rect.setAttribute('x', '0');
+    rect.setAttribute('y', '0');
+    rect.setAttribute('width', '100%');
+    rect.setAttribute('height', '100%');
+    rect.setAttribute('rx', String(radius));
+    rect.setAttribute('ry', String(radius));
+    rect.setAttribute('pathLength', '10');
+    svg.appendChild(rect);
+    return svg;
+  }
+
+  function enhanceBtn(btn) {
+    if (!(btn instanceof Element)) return;
+    if (btn.dataset.sketchified === '1') return;
+    btn.dataset.sketchified = '1';
+
+    const style = getComputedStyle(btn);
+    const lines = document.createElement('div');
+    lines.className = 'btn-lines';
+
+    const gTop = document.createElement('div');
+    const gBot = document.createElement('div');
+
+    const radius = parseInt(style.borderRadius, 10) || 0;
+    const svg = createSketchSVG(btn.offsetWidth, btn.offsetHeight, radius);
+
+    gTop.appendChild(svg);
+    gTop.appendChild(svg.cloneNode(true));
+    gTop.appendChild(svg.cloneNode(true));
+    gTop.appendChild(svg.cloneNode(true));
+
+    gBot.appendChild(svg.cloneNode(true));
+    gBot.appendChild(svg.cloneNode(true));
+    gBot.appendChild(svg.cloneNode(true));
+    gBot.appendChild(svg.cloneNode(true));
+
+    lines.appendChild(gTop);
+    lines.appendChild(gBot);
+    btn.appendChild(lines);
+
+    btn.addEventListener('pointerenter', () => {
+      btn.classList.add('sketch-start');
+    });
+
+    svg.addEventListener('animationend', () => {
+      btn.classList.remove('sketch-start');
+    });
+  }
+
+  function enhanceAllButtons(container = document) {
+    container.querySelectorAll('button.btn, a.btn').forEach(enhanceBtn);
+  }
+
+  function bootSketchOverlay() {
+    enhanceAllButtons(root);
+    const mo = new MutationObserver(muts => {
+      for (const m of muts) {
+        m.addedNodes && m.addedNodes.forEach(node => {
+          if (!(node instanceof Element)) return;
+          if (node.matches && node.matches('button.btn, a.btn')) enhanceBtn(node);
+          if (node.querySelectorAll) {
+            node.querySelectorAll('button.btn, a.btn').forEach(enhanceBtn);
+          }
+        });
+      }
+    });
+    mo.observe(root, { childList: true, subtree: true });
+  }
 
   function setTitle(suffix) {
     document.title = `DMSG3 (G3/${suffix})`;
@@ -30,33 +104,37 @@
   }
 
   function renderRoute() {
+    try { cleanup(); } catch {}
+    cleanup = () => {};
+
     const path = location.pathname.replace(/\/+$/, '') || '/';
     const page = path.split('/').pop() || 'index.html';
     window.scrollTo(0, 0);
 
+    let ret;
     switch (page) {
       case '':
       case 'index.html':
-        return renderHome();
+        ret = renderHome(); break;
       case 'list.html':
-        return renderList();
+        ret = renderList(); break;
       case 'new.html':
-        return renderNew();
+        ret = renderNew(); break;
       case 'details.html':
-        return renderDetails();
+        ret = renderDetails(); break;
       default:
-        return renderHome();
+        ret = renderHome(); break;
     }
+    if (typeof ret === 'function') cleanup = ret;
   }
 
   function renderHome() {
     setTitle('index');
     root.innerHTML = `
       <div class="glass-card nav-card">
-        <div class="links">
-          <a class="link" href="./new.html">Neues Dokument</a>
-          <span class="sep">/</span>
-          <a class="link" href="./list.html">Liste</a>
+        <div class="home-actions">
+          <a class="btn soft big" href="./new.html">Neues Dokument</a>
+          <a class="btn soft light" href="./list.html">Liste</a>
         </div>
       </div>
     `;
@@ -67,8 +145,8 @@
     root.innerHTML = `
       <div class="glass-card">
         <nav class="top-actions">
-          <a class="link" href="./index.html">-- Start</a>
-          <a class="link" href="./new.html">Neu --</a>
+          <a class="link" href="./index.html">← Start</a>
+          <a class="link" href="./new.html">Neu →</a>
         </nav>
 
         <h2 class="section-title">Dokumentenliste</h2>
@@ -105,11 +183,11 @@
       table.innerHTML = `
         <thead>
           <tr>
-            <th>name</th>
-            <th>größe</th>
-            <th>typ</th>
-            <th>upload</th>
-            <th>aktion</th>
+            <th scope="col">Name</th>
+            <th scope="col">Größe</th> 
+            <th scope="col">Typ</th>
+            <th scope="col">Upload</th>
+            <th scope="col">Aktion</th>
           </tr>
         </thead>
         <tbody>
@@ -127,8 +205,8 @@
                 <td>${uploaded}</td>
                 <td>
                   ${id ? `
-                    <a class="btn ghost" href="${dl}" rel="external" target="_blank">download</a>
-                    <button class="btn danger" data-del="${id}">löschen</button>
+                    <a class="btn ghost" href="${dl}" rel="external" target="_blank">Herunterladen</a>
+                    <button class="btn danger" data-del="${id}">Löschen</button>
                   ` : ''}
                 </td>
               </tr>
@@ -163,8 +241,8 @@
     root.innerHTML = `
       <div class="glass-card">
         <nav class="top-actions">
-          <a class="link" href="./index.html">-- Start</a>
-          <a class="link" href="./list.html">Liste --</a>
+          <a class="link" href="./index.html">← Start</a>
+          <a class="link" href="./list.html">Liste →</a>
         </nav>
 
         <h2 class="section-title">Neues Dokument hinzufügen</h2>
@@ -176,12 +254,14 @@
           </div>
 
           <div class="field">
-            <label class="lbl" for="file">Datei (.pdf oder .txt)</label>
-            <input id="file" type="file" name="file" accept=".pdf,.txt" required />
+            <label class="lbl" for="fileInput">Datei</label>
+            <input id="fileInput" type="file" name="file" accept=".pdf,.txt" hidden />
+            <label id="dropZone" for="fileInput" class="drop-zone" tabindex="0">
+              <span class="dz-text">Datei hierher ziehen<br><small>oder zum Auswählen drücken</small></span>
+            </label>
           </div>
 
           <div class="actions">
-            <a class="btn ghost" href="./list.html">Zur Liste</a>
             <button type="submit" class="btn primary">Speichern</button>
           </div>
 
@@ -190,17 +270,82 @@
       </div>
     `;
 
-    const form = root.querySelector('#createForm');
-    const msg = root.querySelector('#msg');
-    const nameInput = root.querySelector('#docName');
-    const fileInput = root.querySelector('#file');
+    const form       = root.querySelector('#createForm');
+    const msg        = root.querySelector('#msg');
+    const nameInput  = root.querySelector('#docName');
+    const fileInput  = root.querySelector('#fileInput');
+    const dropZone   = root.querySelector('#dropZone');
+
+    let pendingFile = null;
+    let dragDepth   = 0;
+
+    function updateDropZoneText(text, ok = false) {
+      dropZone.querySelector('.dz-text').innerHTML = text;
+      dropZone.dataset.state = ok ? 'ok' : '';
+    }
+
+    function setFile(file) {
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        fileInput.files = dt.files;
+      } catch {
+        pendingFile = file;
+      }
+      if (file && !nameInput.value.trim()) {
+        nameInput.value = file.name.replace(/\.[^.]+$/, '');
+      }
+      if (file) {
+        updateDropZoneText(`Hinzugefügt: <strong>${file.name}</strong>`, true);
+      }
+    }
 
     fileInput.addEventListener('change', () => {
       const file = fileInput.files && fileInput.files[0];
-      if (file && !nameInput.value.trim()) {
-        const n = file.name.replace(/\.[^.]+$/, '');
-        nameInput.value = n;
+      if (file) setFile(file);
+    });
+
+    const onDragOver = (ev) => {
+      ev.preventDefault();
+    };
+    const onDragEnter = (ev) => {
+      ev.preventDefault();
+      dragDepth++;
+      dropZone.classList.add('is-dragover');
+    };
+    const onDragLeave = () => {
+      dragDepth = Math.max(0, dragDepth - 1);
+      if (dragDepth === 0) dropZone.classList.remove('is-dragover');
+    };
+    const onDrop = (ev) => {
+      ev.preventDefault();
+      dragDepth = 0;
+      dropZone.classList.remove('is-dragover');
+
+      const files = ev.dataTransfer && ev.dataTransfer.files;
+      if (!files || !files.length) return;
+
+      const file = files[0];
+      const ext = (file.name.match(/\.[^.]+$/) || [''])[0].toLowerCase();
+      if (!['.pdf', '.txt'].includes(ext)) {
+        msg.textContent = 'Nur .pdf und .txt erlaubt.';
+        msg.className = 'msg err';
+        return;
       }
+      setFile(file);
+      msg.textContent = '';
+      msg.className = 'msg';
+    };
+
+    ['dragover', 'dragenter', 'dragleave', 'drop'].forEach(evt => {
+      dropZone.addEventListener(evt, (e) => {
+        switch (evt) {
+          case 'dragover':  onDragOver(e);  break;
+          case 'dragenter': onDragEnter(e); break;
+          case 'dragleave': onDragLeave(e); break;
+          case 'drop':      onDrop(e);      break;
+        }
+      });
     });
 
     form.addEventListener('submit', async (ev) => {
@@ -208,7 +353,9 @@
       msg.textContent = 'Wird gespeichert...';
       msg.className = 'msg';
 
-      const file = fileInput.files && fileInput.files[0];
+      let file = fileInput.files && fileInput.files[0];
+      if (!file && pendingFile) file = pendingFile;
+
       if (!file) {
         msg.textContent = 'Bitte eine Datei auswählen (.pdf oder .txt).';
         msg.className = 'msg err';
@@ -238,12 +385,14 @@
 
         const created = await res.json().catch(() => null);
         form.reset();
+        pendingFile = null;
+        updateDropZoneText('Datei hierher ziehen<br><small>oder per Button auswählen</small>');
 
         const detailsLink = created?.id
           ? ` <a class="link" href="./details.html?id=${encodeURIComponent(created.id)}">Details ansehen</a>`
           : '';
 
-        msg.innerHTML = `erstellt${detailsLink ? ' - ' + detailsLink : ''}`;
+        msg.innerHTML = `Erstellt${detailsLink ? ' - ' + detailsLink : ''}`;
         msg.className = 'msg ok';
       } catch (e) {
         msg.textContent = e.message || 'Erstellen fehlgeschlagen';
@@ -258,8 +407,8 @@
     root.innerHTML = `
       <div class="glass-card">
         <nav class="top-actions">
-          <a class="link" href="./list.html">-- liste</a>
-          <a class="link" href="./index.html">start --</a>
+          <a class="link" href="./list.html">← Liste</a>
+          <a class="link" href="./index.html">Start →</a>
         </nav>
         <section id="details"></section>
       </div>
@@ -286,12 +435,12 @@
       const inlineUrl = `${dlUrl}?inline=true`;
 
       out.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-          <h2 class="section-title" style="margin:0;">Details</h2>
-          <div class="actions" style="margin:0;">
-            <a class="btn ghost" href="${dlUrl}" rel="external" target="_blank">Download</a>
-            <button id="del" class="btn danger">löschen</button>
-            <a class="btn ghost" href="./list.html">zur liste</a>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:10px;flex-wrap:wrap;">
+          <h2 class="section-title" style="margin:0;flex:1 1 auto;">Details</h2>
+          <div class="actions" style="margin:0;flex:none;">
+            <a class="btn ghost" href="${dlUrl}" rel="external" target="_blank">Herunterladen</a>
+            <button id="del" class="btn danger">Löschen</button>
+            <a class="btn soft" href="./new.html">Weiteres hinzufügen...</a>
           </div>
         </div>
         <p><strong>Name:</strong> ${d.name ?? '(ohne Name)'}</p>
@@ -344,6 +493,8 @@
 
   window.addEventListener('popstate', renderRoute);
   document.addEventListener('click', handleLinkClick);
+
+  bootSketchOverlay();
 
   renderRoute();
 })();
