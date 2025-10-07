@@ -1,7 +1,7 @@
-﻿using System.Text;
-using System.Text.Json;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using System.Text;
+using System.Text.Json;
 
 namespace DMSG3.REST.Messaging;
 

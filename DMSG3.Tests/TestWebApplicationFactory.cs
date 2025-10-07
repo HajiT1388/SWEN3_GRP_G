@@ -1,6 +1,6 @@
-using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using System;
 
 namespace DMSG3.Tests;
 

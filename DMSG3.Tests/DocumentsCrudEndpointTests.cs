@@ -1,3 +1,7 @@
+using DMSG3.Domain.Entities;
+using DMSG3.Infrastructure;
+using DMSG3.REST.DTOs;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +11,6 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
-using DMSG3.Domain.Entities;
-using DMSG3.Infrastructure;
-using DMSG3.REST.DTOs;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace DMSG3.Tests;

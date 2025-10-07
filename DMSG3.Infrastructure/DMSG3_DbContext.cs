@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DMSG3.Domain.Entities;
+﻿using DMSG3.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DMSG3.Infrastructure
 {

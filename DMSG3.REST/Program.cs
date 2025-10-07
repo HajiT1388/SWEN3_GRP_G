@@ -1,11 +1,11 @@
 using DMSG3.Domain.Entities;
 using DMSG3.Infrastructure;
 using DMSG3.REST.DTOs;
+using DMSG3.REST.Logging;
 using DMSG3.REST.Messaging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DMSG3.REST.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 

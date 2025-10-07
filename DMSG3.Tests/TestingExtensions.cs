@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using DMSG3.Domain.Entities;
 using DMSG3.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
 
 namespace DMSG3.Tests;
 

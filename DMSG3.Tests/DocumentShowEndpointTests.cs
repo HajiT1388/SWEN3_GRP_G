@@ -1,10 +1,10 @@
+using DMSG3.Domain.Entities;
+using DMSG3.REST.DTOs;
 using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
-using DMSG3.Domain.Entities;
-using DMSG3.REST.DTOs;
 using Xunit;
 
 namespace DMSG3.Tests;
