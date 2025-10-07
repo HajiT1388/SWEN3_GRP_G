@@ -10,10 +10,12 @@ public class RabbitPublisher : IRabbitPublisher, IDisposable
     private readonly IConnection _conn;
     private readonly IModel _ch;
     private readonly RabbitMqOptions _opt;
+    private readonly ILogger<RabbitPublisher> _log;
 
-    public RabbitPublisher(IOptions<RabbitMqOptions> options)
+    public RabbitPublisher(IOptions<RabbitMqOptions> options, ILogger<RabbitPublisher> log)
     {
         _opt = options.Value;
+        _log = log;
 
         var factory = new ConnectionFactory
         {
@@ -29,8 +31,10 @@ public class RabbitPublisher : IRabbitPublisher, IDisposable
         _ch = _conn.CreateModel();
 
         _ch.ExchangeDeclare(_opt.Exchange, type: ExchangeType.Topic, durable: true, autoDelete: false);
-
         _ch.ConfirmSelect();
+
+        _log.LogInformation("RabbitPublisher verbunden: {Host}:{Port} Exchange={Exchange}",
+            _opt.HostName, _opt.Port, _opt.Exchange);
     }
 
     public Task PublishAsync<T>(string routingKey, T message, CancellationToken ct = default)
@@ -43,6 +47,8 @@ public class RabbitPublisher : IRabbitPublisher, IDisposable
 
         _ch.BasicPublish(exchange: _opt.Exchange, routingKey: routingKey, basicProperties: props, body: body);
         _ch.WaitForConfirmsOrDie(TimeSpan.FromSeconds(5));
+
+        _log.LogInformation("Nachricht veröffentlicht. RoutingKey={RoutingKey} Size={Size}B", routingKey, body.Length);
         return Task.CompletedTask;
     }
 
@@ -52,5 +58,6 @@ public class RabbitPublisher : IRabbitPublisher, IDisposable
         try { _conn?.Close(); } catch { }
         _ch?.Dispose();
         _conn?.Dispose();
+        _log.LogInformation("RabbitPublisher getrennt.");
     }
 }

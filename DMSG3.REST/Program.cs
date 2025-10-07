@@ -5,8 +5,27 @@ using DMSG3.REST.Messaging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using DMSG3.REST.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Wenn es im Container läuft, nicht in Datei loggen, sondern Container-Konsolen-Log
+var runningInContainer = string.Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), "true", StringComparison.OrdinalIgnoreCase);
+var runStamp = DateTime.Now; // Dateiname für die Erstellen Logs enthält die Startzeit dieser Program.cs
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+if (!runningInContainer)
+{
+    var logsDir = Path.Combine(AppContext.BaseDirectory, "logs");
+    Directory.CreateDirectory(logsDir);
+    builder.Logging.AddProvider(new FileLoggerProvider(
+        directory: logsDir,
+        filenameBase: $"rest_{runStamp:yyyyMMdd_HHmmss}",
+        minLevel: LogLevel.Information
+    ));
+}
 
 // InMemory für Tests (Abfrage bei Tests) sonst PostgreSQL
 if (builder.Environment.IsEnvironment("Testing"))
@@ -29,6 +48,10 @@ builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("Ra
 builder.Services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
 
 var app = builder.Build();
+
+// Start-Log
+app.Logger.LogInformation("REST gestartet. Container={Container} BaseDir={BaseDir} LogFileBase=rest_{Stamp}",
+    runningInContainer, AppContext.BaseDirectory, runStamp.ToString("yyyyMMdd_HHmmss"));
 
 // ProblemDetails JSON
 app.UseExceptionHandler(errApp =>
@@ -69,13 +92,23 @@ using (var scope = app.Services.CreateScope())
         try
         {
             db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
+            app.Logger.LogInformation("pgcrypto geprüft/aktiviert.");
         }
         catch (Exception ex)
         {
             app.Logger.LogWarning(ex, "pgcrypto konnte nicht erstellt werden.");
         }
 
-        db.Database.Migrate();
+        try
+        {
+            db.Database.Migrate();
+            app.Logger.LogInformation("EF Core Migrationen ausgeführt.");
+        }
+        catch (Exception ex)
+        {
+            app.Logger.LogError(ex, "Migrationen fehlgeschlagen");
+            throw;
+        }
     }
 }
 

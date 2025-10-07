@@ -25,7 +25,7 @@ services:
       RABBITMQ_DEFAULT_USER: dmsg
       RABBITMQ_DEFAULT_PASS: dmsg
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ["CMD-SHELL", "rabbitmq-diagnostics -q ping && rabbitmq-diagnostics -q check_port_connectivity"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -47,7 +47,6 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      ASPNETCORE_URLS: "http://+:8080"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
       RabbitMq__HostName: "rabbitmq"
       RabbitMq__Port: 5672
