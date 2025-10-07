@@ -1,6 +1,8 @@
 @echo off
-chcp 65001
 setlocal
+chcp 65001 >nul
+
+pushd "%~dp0"
 
 docker compose up --build -d
 
@@ -9,8 +11,9 @@ start "" "http://localhost:8081/swagger/index.html"
 start "" "http://localhost:9093/"
 start "" "http://localhost/"
 
-start "REST Logs" cmd /k "docker compose logs -f rest"
-start "Worker Logs" cmd /k "docker compose logs -f worker"
-start "RabbitMQ Logs" cmd /k "docker compose logs -f rabbitmq"
+start "REST Logs"     cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rest"
+start "Worker Logs"   cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f worker"
+start "RabbitMQ Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rabbitmq"
 
+popd
 pause
