@@ -1,12 +1,14 @@
 using DMSG3.Domain.Entities;
 using DMSG3.Infrastructure;
 using DMSG3.REST.DTOs;
+using DMSG3.REST.Messaging;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DB-Konfiguration: InMemory für Tests, sonst PostgreSQL
+// InMemory für Tests (Abfrage bei Tests) sonst PostgreSQL
 if (builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
@@ -22,7 +24,34 @@ else
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// RabbitMQ & Publisher
+builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
+builder.Services.AddSingleton<IRabbitPublisher, RabbitPublisher>();
+
 var app = builder.Build();
+
+// ProblemDetails JSON
+app.UseExceptionHandler(errApp =>
+{
+    errApp.Run(async context =>
+    {
+        var feat = context.Features.Get<IExceptionHandlerFeature>();
+        var ex = feat?.Error;
+
+        var pd = new ProblemDetails
+        {
+            Title = "Interner Serverfehler",
+            Status = StatusCodes.Status500InternalServerError,
+            Detail = app.Environment.IsDevelopment() ? ex?.Message : null,
+            Instance = context.Request.Path
+        };
+        pd.Extensions["traceId"] = context.TraceIdentifier;
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/problem+json";
+        await context.Response.WriteAsJsonAsync(pd);
+    });
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -60,12 +89,13 @@ app.MapGet("/health", () => Results.Ok("healthy"));
 var api = app.MapGroup("/api").WithTags("Documents");
 api.DisableAntiforgery();
 
-// Whitelist für Dateiendungen
+// Whitelist f r Dateiendungen
 var AllowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".pdf", ".txt" };
 
 // GET /api/documents Liste ohne Inhalt
-api.MapGet("/documents", async (DMSG3_DbContext db) =>
+api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf) =>
 {
+    var log = lf.CreateLogger("Documents");
     var items = await db.Documents
         .AsNoTracking()
         .OrderByDescending(d => d.UploadTime)
@@ -78,12 +108,14 @@ api.MapGet("/documents", async (DMSG3_DbContext db) =>
         ))
         .ToListAsync();
 
+    log.LogInformation("Dokumentenliste abgefragt. Count={Count}", items.Count);
     return Results.Ok(items);
 });
 
 // GET /api/documents/id Details ohne Inhalt
-api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db) =>
+api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFactory lf) =>
 {
+    var log = lf.CreateLogger("Documents");
     var dto = await db.Documents
         .AsNoTracking()
         .Where(d => d.Id == id)
@@ -97,17 +129,29 @@ api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db) =>
         ))
         .FirstOrDefaultAsync();
 
-    return dto is null ? Results.NotFound() : Results.Ok(dto);
+    if (dto is null)
+    {
+        log.LogWarning("Dokument nicht gefunden. Id={Id}", id);
+        return Results.NotFound();
+    }
+
+    return Results.Ok(dto);
 });
 
 // GET /api/documents/id/download Datei inline optional
 api.MapGet("/documents/{id:guid}/download", async (
-Guid id,
-[FromQuery(Name = "inline")] string? inline,
-DMSG3_DbContext db) =>
+    Guid id,
+    [FromQuery(Name = "inline")] string? inline,
+    DMSG3_DbContext db,
+    ILoggerFactory lf) =>
 {
+    var log = lf.CreateLogger("Documents");
     var doc = await db.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
-    if (doc is null) return Results.NotFound();
+    if (doc is null)
+    {
+        log.LogWarning("Download: Dokument nicht gefunden. Id={Id}", id);
+        return Results.NotFound();
+    }
 
     var stream = new MemoryStream(doc.Content, writable: false);
 
@@ -129,8 +173,14 @@ DMSG3_DbContext db) =>
 });
 
 // POST /api/documents multipart/form-data Upload
-api.MapPost("/documents", async ([FromForm] DocumentUploadRequest request, DMSG3_DbContext db) =>
+api.MapPost("/documents", async (
+    [FromForm] DocumentUploadRequest request,
+    DMSG3_DbContext db,
+    IRabbitPublisher publisher,
+    ILoggerFactory lf) =>
 {
+    var log = lf.CreateLogger("Documents");
+
     if (request?.File == null || request.File.Length == 0)
         return Results.BadRequest("Datei fehlt.");
 
@@ -168,19 +218,50 @@ api.MapPost("/documents", async ([FromForm] DocumentUploadRequest request, DMSG3
     db.Documents.Add(doc);
     await db.SaveChangesAsync();
 
-    // Nur id zurück
+    // LOG Upload
+    log.LogInformation("Dokument wurde hochgeladen. Id={Id} Name={Name} SizeBytes={Size}", doc.Id, doc.Name, doc.SizeBytes);
+
+    // OCR-Request ins Topic (ins Nichts jetzt)
+    var ocrRequest = new
+    {
+        id = doc.Id,
+        originalFileName = doc.OriginalFileName,
+        contentType = doc.ContentType,
+        sizeBytes = doc.SizeBytes,
+        uploadedAtUtc = doc.UploadTime
+    };
+    try
+    {
+        await publisher.PublishAsync("ocr.request", ocrRequest);
+        log.LogInformation("OCR_REQUEST gepublished. Id={Id}", doc.Id);
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "Publish OCR_REQUEST fehlgeschlagen. Id={Id}", doc.Id);
+    }
+
+    // Nur id zur ck
     return Results.Created($"/api/documents/{doc.Id}", new { id = doc.Id });
 })
 .Accepts<DocumentUploadRequest>("multipart/form-data");
 
 // DELETE /api/documents/id
-api.MapDelete("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db) =>
+api.MapDelete("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFactory lf) =>
 {
+    var log = lf.CreateLogger("Documents");
     var doc = await db.Documents.FindAsync(id);
-    if (doc is null) return Results.NotFound();
+    if (doc is null)
+    {
+        log.LogWarning("Löschen: Dokument nicht gefunden. Id={Id}", id);
+        return Results.NotFound();
+    }
 
     db.Documents.Remove(doc);
     await db.SaveChangesAsync();
+
+    // Logging: Delete
+    log.LogInformation("Dokument gelöscht. Id={Id} Name={Name}", id, doc.Name);
+
     return Results.NoContent();
 });
 

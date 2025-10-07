@@ -14,11 +14,28 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    ports:
+      - "5672:5672"
+      - "9093:15672" # http://localhost:9093/
+    environment:
+      RABBITMQ_DEFAULT_USER: dmsg
+      RABBITMQ_DEFAULT_PASS: dmsg
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
 
   adminer:
     image: adminer
     ports:
-      - "9091:8080" #http://localhost:9091
+      - "9091:8080"
+    restart: unless-stopped
 
   rest:
     build:
@@ -27,21 +44,48 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     environment:
-      ASPNETCORE_URLS: "http://+:8080" 
+      ASPNETCORE_URLS: "http://+:8080"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: "dmsg"
+      RabbitMq__Password: "dmsg"
+      RabbitMq__Exchange: "dmsg3.events"
+      RabbitMq__OcrQueue: "dmsg3.ocr.queue"
+      RabbitMq__ResultQueue: "dmsg3.result.queue"
     ports:
-      - "8081:8080" #http://localhost:8081/swagger
+      - "8081:8080"
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: DMSG3.Worker/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: "dmsg"
+      RabbitMq__Password: "dmsg"
+      RabbitMq__Exchange: "dmsg3.events"
+      RabbitMq__OcrQueue: "dmsg3.ocr.queue"
+      RabbitMq__ResultQueue: "dmsg3.result.queue"
     restart: unless-stopped
 
   ui:
     build:
       context: ./UI
-      dockerfile: Dockerfile
     depends_on:
-      - rest
+      rest:
+        condition: service_started
     ports:
-      - "8080:80" #http://localhost:8080
+      - "8080:80"
       - "127.0.0.1:80:80" #http://localhost
     restart: unless-stopped
 

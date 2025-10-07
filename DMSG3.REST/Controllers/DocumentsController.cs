@@ -1,5 +1,4 @@
-﻿using System.IO;
-using DMSG3.Domain.Entities;
+﻿using DMSG3.Domain.Entities;
 using DMSG3.Infrastructure;
 using DMSG3.REST.DTOs;
 using Microsoft.AspNetCore.Mvc;
