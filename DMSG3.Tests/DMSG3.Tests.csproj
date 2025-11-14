@@ -24,6 +24,7 @@
     <ProjectReference Include="..\DMSG3.REST\DMSG3.REST.csproj" />
     <ProjectReference Include="..\DMSG3.Infrastructure\DMSG3.Infrastructure.csproj" />
     <ProjectReference Include="..\DMSG3.Domain\DMSG3.Domain.csproj" />
+    <ProjectReference Include="..\DMSG3.Worker\DMSG3.Worker.csproj" />
   </ItemGroup>
 
 </Project>

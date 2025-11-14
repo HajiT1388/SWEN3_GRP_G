@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DMSG3.Infrastructure.Migrations
 {
     [DbContext(typeof(DMSG3_DbContext))]
-    [Migration("20250928141231_InitialBinaryDocuments")]
-    partial class InitialBinaryDocuments
+    [Migration("20251101120000_AddObjectStorageAndOcrColumns")]
+    partial class AddObjectStorageAndOcrColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,6 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnName("id")
                         .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<byte[]>("Content")
-                        .IsRequired()
-                        .HasColumnType("bytea")
-                        .HasColumnName("content");
-
                     b.Property<string>("ContentType")
                         .IsRequired()
                         .HasColumnType("text")
@@ -49,6 +44,28 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
+                    b.Property<string>("OcrError")
+                        .HasColumnType("text")
+                        .HasColumnName("ocr_error");
+
+                    b.Property<DateTime?>("OcrCompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ocr_completed_at");
+
+                    b.Property<DateTime?>("OcrStartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("ocr_started_at");
+
+                    b.Property<string>("OcrStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ocr_status")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<string>("OcrText")
+                        .HasColumnType("text")
+                        .HasColumnName("ocr_text");
+
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
                         .HasColumnType("text")
@@ -57,6 +74,16 @@ namespace DMSG3.Infrastructure.Migrations
                     b.Property<long>("SizeBytes")
                         .HasColumnType("bigint")
                         .HasColumnName("size_bytes");
+
+                    b.Property<string>("StorageBucket")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("storage_bucket");
+
+                    b.Property<string>("StorageObjectName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("storage_object_name");
 
                     b.Property<DateTime>("UploadTime")
                         .ValueGeneratedOnAdd()

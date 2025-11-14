@@ -4,6 +4,7 @@ using DMSG3.REST.DTOs;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -27,29 +28,8 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
     [Fact]
     public async Task List_returns_all_documents()
     {
-        var aBytes = Encoding.UTF8.GetBytes("A");
-        var bBytes = Encoding.UTF8.GetBytes("B");
-
-        var d1 = new Document
-        {
-            Id = Guid.NewGuid(),
-            Name = "yes",
-            OriginalFileName = "yes.txt",
-            ContentType = "text/plain; charset=utf-8",
-            Content = aBytes,
-            SizeBytes = aBytes.LongLength,
-            UploadTime = DateTime.UtcNow
-        };
-        var d2 = new Document
-        {
-            Id = Guid.NewGuid(),
-            Name = "no",
-            OriginalFileName = "no.txt",
-            ContentType = "text/plain; charset=utf-8",
-            Content = bBytes,
-            SizeBytes = bBytes.LongLength,
-            UploadTime = DateTime.UtcNow
-        };
+        var d1 = BuildSeedDocument(Guid.NewGuid(), "yes", "yes.txt", "A");
+        var d2 = BuildSeedDocument(Guid.NewGuid(), "no", "no.txt", "B");
 
         await _factory.ResetAndSeedAsync(d1, d2);
 
@@ -62,6 +42,26 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.Equal(2, docs!.Count);
         Assert.Contains(docs, d => d.Name == "yes");
         Assert.Contains(docs, d => d.Name == "no");
+        Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.OcrStatus)));
+    }
+
+    private static SeedDocument BuildSeedDocument(Guid? id, string name, string fileName, string content, string contentType = "text/plain; charset=utf-8")
+    {
+        var bytes = Encoding.UTF8.GetBytes(content ?? string.Empty);
+        var doc = new Document
+        {
+            Id = id ?? Guid.NewGuid(),
+            Name = name,
+            OriginalFileName = fileName,
+            ContentType = contentType,
+            SizeBytes = bytes.LongLength,
+            StorageBucket = "documents",
+            StorageObjectName = string.Empty,
+            UploadTime = DateTime.UtcNow
+        };
+        var ext = Path.GetExtension(fileName);
+        doc.StorageObjectName = $"{doc.Id:N}{(string.IsNullOrWhiteSpace(ext) ? ".bin" : ext)}";
+        return new SeedDocument(doc, bytes);
     }
 
     private static MultipartFormDataContent BuildMultipart(string? name, string fileName, string content, string contentType = "text/plain")
@@ -103,24 +103,19 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.Equal("neu", inDb!.Name);
         Assert.Equal("neu.txt", inDb.OriginalFileName);
         Assert.Equal(3, inDb.SizeBytes);
-        Assert.Equal("123", Encoding.UTF8.GetString(inDb.Content));
+        Assert.Equal("documents", inDb.StorageBucket);
+        Assert.False(string.IsNullOrWhiteSpace(inDb.StorageObjectName));
+        Assert.Equal(DocumentOcrStatus.Pending, inDb.OcrStatus);
+
+        Assert.True(_factory.DocumentStorage.TryGet(inDb.Id, out var storedBytes));
+        Assert.Equal("123", Encoding.UTF8.GetString(storedBytes!));
     }
 
     [Fact]
     public async Task Delete_existing_document_removes_and_returns_204()
     {
-        var bytes = Encoding.UTF8.GetBytes("bye");
         var id = Guid.NewGuid();
-        await _factory.ResetAndSeedAsync(new Document
-        {
-            Id = id,
-            Name = "delete",
-            OriginalFileName = "delete.txt",
-            ContentType = "text/plain; charset=utf-8",
-            Content = bytes,
-            SizeBytes = bytes.LongLength,
-            UploadTime = DateTime.UtcNow
-        });
+        await _factory.ResetAndSeedAsync(BuildSeedDocument(id, "delete", "delete.txt", "bye"));
 
         var client = _factory.CreateClient();
         var del = await client.DeleteAsync($"/api/documents/{id}");
