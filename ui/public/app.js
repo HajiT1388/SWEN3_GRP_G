@@ -140,6 +140,21 @@
     `;
   }
 
+  function renderStatusBadge(status, completedAt) {
+    const normalized = (status || '').toLowerCase();
+    const labels = {
+      pending: 'Ausstehend',
+      processing: 'Wird verarbeitet',
+      completed: 'Fertig',
+      failed: 'Fehlgeschlagen'
+    };
+    const label = labels[normalized] || status || 'Unbekannt';
+    const extra = normalized === 'completed' && completedAt
+      ? `<span class="status-muted">${new Date(completedAt).toLocaleString()}</span>`
+      : '';
+    return `<span class="status-badge status-${normalized || 'unknown'}">${label}</span>${extra}`;
+  }
+
   function renderList() {
     setTitle('list');
     root.innerHTML = `
@@ -155,7 +170,13 @@
     `;
 
     const listEl = root.querySelector('#list');
-    loadDocs(listEl);
+    let refreshHandle;
+
+    const refresh = (silent = false) => loadDocs(listEl, silent);
+    refresh();
+    refreshHandle = setInterval(() => refresh(true), 6000);
+
+    return () => clearInterval(refreshHandle);
   }
 
   function formatBytes(bytes) {
@@ -166,8 +187,8 @@
     return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
   }
 
-  async function loadDocs(listEl) {
-    listEl.innerHTML = '<div style="padding:12px;">Lädt...</div>';
+  async function loadDocs(listEl, silent = false) {
+    if (!silent) listEl.innerHTML = '<div style="padding:12px;">Lädt...</div>';
     try {
       const res = await fetch('/api/documents', { cache: 'no-store' });
       if (!res.ok) throw new Error('Fehler beim Laden');
@@ -186,6 +207,7 @@
             <th scope="col">Name</th>
             <th scope="col">Größe</th> 
             <th scope="col">Typ</th>
+            <th scope="col">OCR</th>
             <th scope="col">Upload</th>
             <th scope="col">Aktion</th>
           </tr>
@@ -202,6 +224,7 @@
                 <td><a href="${details}">${name}</a><br/><span class="badge">${id || '—'}</span></td>
                 <td>${formatBytes(d.sizeBytes)}</td>
                 <td>${d.contentType || '—'}</td>
+                <td>${renderStatusBadge(d.ocrStatus, d.ocrCompletedAt)}</td>
                 <td>${uploaded}</td>
                 <td>
                   ${id ? `
@@ -386,7 +409,7 @@
         const created = await res.json().catch(() => null);
         form.reset();
         pendingFile = null;
-        updateDropZoneText('Datei hierher ziehen<br><small>oder per Button auswählen</small>');
+        updateDropZoneText('Datei(en) hierher ziehen<br><small>oder zum Auswählen drücken</small>');
 
         const detailsLink = created?.id
           ? ` <a class="link" href="./details.html?id=${encodeURIComponent(created.id)}">Details ansehen</a>`
@@ -401,7 +424,7 @@
     });
   }
 
-  async function renderDetails() {
+  function renderDetails() {
     setTitle('details');
     const id = new URL(location.href).searchParams.get('id');
     root.innerHTML = `
@@ -421,67 +444,87 @@
       return;
     }
 
-    try {
-      const res = await fetch(`/api/documents/${encodeURIComponent(id)}`, { cache: 'no-store' });
-      if (res.status === 404) {
-        out.innerHTML = '<p><em>Nicht gefunden.</em></p>';
-        return;
-      }
-      if (!res.ok) throw new Error('Ladefehler');
+    let refreshHandle;
 
-      const d = await res.json();
-      const uploaded = d.uploadTime ? new Date(d.uploadTime).toLocaleString() : '—';
-      const dlUrl = `/api/documents/${encodeURIComponent(id)}/download`;
-      const inlineUrl = `${dlUrl}?inline=true`;
-
-      out.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:10px;flex-wrap:wrap;">
-          <h2 class="section-title" style="margin:0;flex:1 1 auto;">Details</h2>
-          <div class="actions" style="margin:0;flex:none;">
-            <a class="btn ghost" href="${dlUrl}" rel="external" target="_blank">Herunterladen</a>
-            <button id="del" class="btn danger">Löschen</button>
-            <a class="btn soft" href="./new.html">Weiteres hinzufügen...</a>
-          </div>
-        </div>
-        <p><strong>Name:</strong> ${d.name ?? '(ohne Name)'}</p>
-        <p><strong>Original-Dateiname:</strong> ${d.originalFileName ?? '—'}</p>
-        <p><strong>Typ:</strong> ${d.contentType ?? '—'}</p>
-        <p><strong>Größe:</strong> ${formatBytes(d.sizeBytes)}</p>
-        <p><strong>Upload:</strong> ${uploaded}</p>
-        <div id="preview" style="margin-top:12px;"></div>
-      `;
-
-      const previewEl = root.querySelector('#preview');
-      if (d.contentType && d.contentType.startsWith('text/plain')) {
-        try {
-          const r2 = await fetch(dlUrl);
-          if (r2.ok) {
-            const text = await r2.text();
-            previewEl.innerHTML = `
-              <div class="lbl" style="margin-top:10px;">Inhalt (Vorschau)</div>
-              <pre>${escapeHtml(text)}</pre>
-            `;
-          }
-        } catch {}
-      } else if (d.contentType && d.contentType.includes('pdf')) {
-        previewEl.innerHTML = `
-          <div class="lbl" style="margin-top:10px;">PDF Vorschau</div>
-          <iframe src="${inlineUrl}" style="width:100%;height:70vh;border:1px solid rgba(255,255,255,0.1);border-radius:6px;"></iframe>
-        `;
-      }
-
-      root.querySelector('#del').addEventListener('click', async () => {
-        if (!confirm('Wirklich löschen?')) return;
-        const del = await fetch(`/api/documents/${encodeURIComponent(id)}`, { method: 'DELETE' });
-        if (del.status === 204) {
-          navigate('./list.html');
-        } else {
-          alert('Löschen fehlgeschlagen');
+    const fetchDetails = async () => {
+      try {
+        const res = await fetch(`/api/documents/${encodeURIComponent(id)}`, { cache: 'no-store' });
+        if (res.status === 404) {
+          out.innerHTML = '<p><em>Nicht gefunden.</em></p>';
+          return;
         }
-      });
-    } catch (e) {
-      out.innerHTML = `<p style="color:#ff9b9b;">${e.message || 'Fehler'}</p>`;
-    }
+        if (!res.ok) throw new Error('Ladefehler');
+
+        const d = await res.json();
+        const uploaded = d.uploadTime ? new Date(d.uploadTime).toLocaleString() : '—';
+        const dlUrl = `/api/documents/${encodeURIComponent(id)}/download`;
+        const inlineUrl = `${dlUrl}?inline=true`;
+
+        out.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:10px;flex-wrap:wrap;">
+            <h2 class="section-title" style="margin:0;flex:1 1 auto;">Details</h2>
+            <div class="actions" style="margin:0;flex:none;">
+              <a class="btn ghost" href="${dlUrl}" rel="external" target="_blank">Herunterladen</a>
+              <button id="del" class="btn danger">Löschen</button>
+              <a class="btn soft" href="./new.html">Weiteres hinzufügen...</a>
+            </div>
+          </div>
+          <div class="meta-block">
+            <p><strong>Name:</strong> ${d.name ?? '(ohne Name)'}</p>
+            <p><strong>Original-Dateiname:</strong> ${d.originalFileName ?? '—'}</p>
+            <p><strong>Typ:</strong> ${d.contentType ?? '—'}</p>
+            <p><strong>Größe:</strong> ${formatBytes(d.sizeBytes)}</p>
+            <p><strong>Upload:</strong> ${uploaded}</p>
+          </div>
+          <p><strong>OCR-Status:</strong> ${renderStatusBadge(d.ocrStatus, d.ocrCompletedAt)} ${d.ocrError ? `<span class="status-muted">${escapeHtml(d.ocrError)}</span>` : ''}</p>
+          ${d.ocrText ? `<div class="ocr-preview"><div class="lbl"><strong>OCR-Vorschau:</strong></div><pre>${escapeHtml(d.ocrText)}</pre></div>` : ''}
+          <div id="preview" style="margin-top:12px;"></div>
+        `;
+
+        const previewEl = root.querySelector('#preview');
+        if (d.contentType && d.contentType.startsWith('text/plain')) {
+          try {
+            const r2 = await fetch(dlUrl);
+            if (r2.ok) {
+              const text = await r2.text();
+              previewEl.innerHTML = `
+                <div class="lbl" style="margin-top:10px;">Inhalt (Vorschau)</div>
+                <pre>${escapeHtml(text)}</pre>
+              `;
+            }
+          } catch {}
+        } else if (d.contentType && d.contentType.includes('pdf')) {
+          previewEl.innerHTML = `
+            <div class="lbl" style="margin-top:10px;"><strong>PDF-Vorschau:</strong></div>
+            <iframe src="${inlineUrl}" style="width:100%;height:70vh;border:1px solid rgba(255,255,255,0.1);border-radius:6px;"></iframe>
+          `;
+        }
+
+        root.querySelector('#del').addEventListener('click', async () => {
+          if (!confirm('Wirklich löschen?')) return;
+          const del = await fetch(`/api/documents/${encodeURIComponent(id)}`, { method: 'DELETE' });
+          if (del.status === 204) {
+            navigate('./list.html');
+          } else {
+            alert('Löschen fehlgeschlagen');
+          }
+        });
+
+        if (refreshHandle) {
+          clearTimeout(refreshHandle);
+          refreshHandle = null;
+        }
+
+        if (d.ocrStatus && !['completed', 'failed'].includes((d.ocrStatus || '').toLowerCase())) {
+          refreshHandle = setTimeout(() => fetchDetails(), 5000);
+        }
+      } catch (e) {
+        out.innerHTML = `<p style="color:#ff9b9b;">${e.message || 'Fehler'}</p>`;
+      }
+    };
+
+    fetchDetails();
+    return () => clearTimeout(refreshHandle);
   }
 
   function escapeHtml(s) {

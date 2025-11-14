@@ -10,5 +10,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
+    <PackageReference Include="Minio" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DMSG3.Domain\DMSG3.Domain.csproj" />
+    <ProjectReference Include="..\DMSG3.Infrastructure\DMSG3.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

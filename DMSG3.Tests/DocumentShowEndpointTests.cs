@@ -1,6 +1,7 @@
 using DMSG3.Domain.Entities;
 using DMSG3.REST.DTOs;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text;
@@ -21,17 +22,7 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
     [Fact]
     public async Task Show_returns_correct_document_by_id()
     {
-        var bytes = Encoding.UTF8.GetBytes("hallo hallo");
-        await _factory.ResetAndSeedAsync(new Document
-        {
-            Id = _factory.SeededDocumentId,
-            Name = "testdatei",
-            OriginalFileName = "testdatei.txt",
-            ContentType = "text/plain; charset=utf-8",
-            Content = bytes,
-            SizeBytes = bytes.LongLength,
-            UploadTime = DateTime.UtcNow
-        });
+        await _factory.ResetAndSeedAsync(BuildSeedDocument(_factory.SeededDocumentId, "hallo hallo"));
 
         var client = _factory.CreateClient();
         var id = _factory.SeededDocumentId;
@@ -45,6 +36,8 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
         Assert.Equal("testdatei", doc.Name);
         Assert.Equal("testdatei.txt", doc.OriginalFileName);
         Assert.True(doc.SizeBytes >= 1);
+        Assert.Equal(DocumentOcrStatus.Completed, doc.OcrStatus);
+        Assert.Equal("OCR TEXT", doc.OcrText);
 
         var dl = await client.GetAsync($"/api/documents/{id}/download");
         Assert.Equal(HttpStatusCode.OK, dl.StatusCode);
@@ -60,5 +53,25 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
         var client = _factory.CreateClient();
         var response = await client.GetAsync($"/api/documents/{Guid.NewGuid()}");
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    private static SeedDocument BuildSeedDocument(Guid id, string content)
+    {
+        var bytes = Encoding.UTF8.GetBytes(content);
+        var doc = new Document
+        {
+            Id = id,
+            Name = "testdatei",
+            OriginalFileName = "testdatei.txt",
+            ContentType = "text/plain; charset=utf-8",
+            SizeBytes = bytes.LongLength,
+            StorageBucket = "documents",
+            StorageObjectName = $"{id:N}.txt",
+            UploadTime = DateTime.UtcNow,
+            OcrStatus = DocumentOcrStatus.Completed,
+            OcrText = "OCR TEXT",
+            OcrCompletedAt = DateTime.UtcNow
+        };
+        return new SeedDocument(doc, bytes);
     }
 }
