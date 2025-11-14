@@ -1,4 +1,6 @@
-﻿namespace DMSG3.Domain.Entities
+﻿using System;
+
+namespace DMSG3.Domain.Entities
 {
     public class Document
     {
