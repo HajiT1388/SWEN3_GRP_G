@@ -5,5 +5,7 @@ public record DocumentListItemDto(
     string Name,
     DateTime UploadTime,
     long SizeBytes,
-    string ContentType
+    string ContentType,
+    string OcrStatus,
+    DateTime? OcrCompletedAt
 );

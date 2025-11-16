@@ -9,11 +9,13 @@ docker compose up --build -d
 start "" "http://localhost:9091/?pgsql=db&username=dmsg3&db=dmsg3_db&ns=public"
 start "" "http://localhost:8081/swagger/index.html"
 start "" "http://localhost:9093/"
+start "" "http://localhost:9090/"
 start "" "http://localhost/"
 
-start "REST Logs"     cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rest"
-start "Worker Logs"   cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f worker"
+start "REST Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rest"
+start "OCR Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f dmsg3-services"
 start "RabbitMQ Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rabbitmq"
+start "MinIO Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f minio"
 
 popd
 pause

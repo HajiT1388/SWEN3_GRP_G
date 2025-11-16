@@ -6,5 +6,9 @@ public record DocumentDetailsDto(
     string OriginalFileName,
     string ContentType,
     long SizeBytes,
-    DateTime UploadTime
+    DateTime UploadTime,
+    string OcrStatus,
+    DateTime? OcrCompletedAt,
+    string? OcrText,
+    string? OcrError
 );

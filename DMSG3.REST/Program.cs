@@ -1,17 +1,21 @@
 using DMSG3.Domain.Entities;
+using DMSG3.Domain.Messaging;
 using DMSG3.Infrastructure;
+using DMSG3.Infrastructure.Storage;
 using DMSG3.REST.DTOs;
 using DMSG3.REST.Logging;
 using DMSG3.REST.Messaging;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Wenn es im Container läuft, nicht in Datei loggen, sondern Container-Konsolen-Log
+// Wenn es im Container lÃ¤uft, nicht in Datei loggen, sondern Container-Konsolen-Log
 var runningInContainer = string.Equals(Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"), "true", StringComparison.OrdinalIgnoreCase);
-var runStamp = DateTime.Now; // Dateiname für die Erstellen Logs enthält die Startzeit dieser Program.cs
+var runStamp = DateTime.Now; // Dateiname fÃ¼r die Erstellen Logs enthÃ¤lt die Startzeit dieser Program.cs
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -27,7 +31,7 @@ if (!runningInContainer)
     ));
 }
 
-// InMemory für Tests (Abfrage bei Tests) sonst PostgreSQL
+// InMemory fÃ¼r Tests (Abfrage bei Tests) sonst PostgreSQL
 if (builder.Environment.IsEnvironment("Testing"))
 {
     builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
@@ -42,6 +46,25 @@ else
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.Configure<MinioOptions>(builder.Configuration.GetSection("Minio"));
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddSingleton<IDocumentStorage, InMemoryDocumentStorage>();
+}
+else
+{
+    builder.Services.AddSingleton<IMinioClient>(sp =>
+    {
+        var opt = sp.GetRequiredService<IOptions<MinioOptions>>().Value;
+        return new MinioClient()
+            .WithEndpoint(opt.Endpoint)
+            .WithCredentials(opt.AccessKey, opt.SecretKey)
+            .WithSSL(opt.UseSsl)
+            .Build();
+    });
+    builder.Services.AddSingleton<IDocumentStorage, MinioDocumentStorage>();
+}
 
 // RabbitMQ & Publisher
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
@@ -92,7 +115,7 @@ using (var scope = app.Services.CreateScope())
         try
         {
             db.Database.ExecuteSqlRaw("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
-            app.Logger.LogInformation("pgcrypto geprüft/aktiviert.");
+            app.Logger.LogInformation("pgcrypto geprÃ¼ft/aktiviert.");
         }
         catch (Exception ex)
         {
@@ -102,7 +125,7 @@ using (var scope = app.Services.CreateScope())
         try
         {
             db.Database.Migrate();
-            app.Logger.LogInformation("EF Core Migrationen ausgeführt.");
+            app.Logger.LogInformation("EF Core Migrationen ausgefÃ¼hrt.");
         }
         catch (Exception ex)
         {
@@ -126,7 +149,7 @@ api.DisableAntiforgery();
 var AllowedExtensions = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { ".pdf", ".txt" };
 
 // GET /api/documents Liste ohne Inhalt
-api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf) =>
+api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf, CancellationToken ct) =>
 {
     var log = lf.CreateLogger("Documents");
     var items = await db.Documents
@@ -137,16 +160,18 @@ api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf) =>
             d.Name,
             d.UploadTime,
             d.SizeBytes,
-            d.ContentType
+            d.ContentType,
+            d.OcrStatus,
+            d.OcrCompletedAt
         ))
-        .ToListAsync();
+        .ToListAsync(ct);
 
     log.LogInformation("Dokumentenliste abgefragt. Count={Count}", items.Count);
     return Results.Ok(items);
 });
 
 // GET /api/documents/id Details ohne Inhalt
-api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFactory lf) =>
+api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFactory lf, CancellationToken ct) =>
 {
     var log = lf.CreateLogger("Documents");
     var dto = await db.Documents
@@ -158,9 +183,13 @@ api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFa
             d.OriginalFileName,
             d.ContentType,
             d.SizeBytes,
-            d.UploadTime
+            d.UploadTime,
+            d.OcrStatus,
+            d.OcrCompletedAt,
+            d.OcrText,
+            d.OcrError
         ))
-        .FirstOrDefaultAsync();
+        .FirstOrDefaultAsync(ct);
 
     if (dto is null)
     {
@@ -176,17 +205,19 @@ api.MapGet("/documents/{id:guid}/download", async (
     Guid id,
     [FromQuery(Name = "inline")] string? inline,
     DMSG3_DbContext db,
-    ILoggerFactory lf) =>
+    ILoggerFactory lf,
+    IDocumentStorage storage,
+    CancellationToken ct) =>
 {
     var log = lf.CreateLogger("Documents");
-    var doc = await db.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
+    var doc = await db.Documents.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id, ct);
     if (doc is null)
     {
         log.LogWarning("Download: Dokument nicht gefunden. Id={Id}", id);
         return Results.NotFound();
     }
 
-    var stream = new MemoryStream(doc.Content, writable: false);
+    var stream = await storage.DownloadAsync(doc, ct);
 
     var showInline = inline is not null &&
         (inline == "1" ||
@@ -209,8 +240,11 @@ api.MapGet("/documents/{id:guid}/download", async (
 api.MapPost("/documents", async (
     [FromForm] DocumentUploadRequest request,
     DMSG3_DbContext db,
+    IDocumentStorage storage,
     IRabbitPublisher publisher,
-    ILoggerFactory lf) =>
+    IOptions<MinioOptions> minioOptions,
+    ILoggerFactory lf,
+    CancellationToken ct) =>
 {
     var log = lf.CreateLogger("Documents");
 
@@ -224,7 +258,6 @@ api.MapPost("/documents", async (
     var name = (request.Name ?? "").Trim();
     if (string.IsNullOrWhiteSpace(name))
     {
-        // Dateiname ohne Endung, wenn kein Name eingegeben ^
         name = Path.GetFileNameWithoutExtension(request.File.FileName);
     }
     if (string.IsNullOrWhiteSpace(name))
@@ -235,37 +268,59 @@ api.MapPost("/documents", async (
         : (ext.Equals(".pdf", StringComparison.OrdinalIgnoreCase) ? "application/pdf" : "text/plain; charset=utf-8");
 
     await using var ms = new MemoryStream();
-    await request.File.CopyToAsync(ms);
-    var bytes = ms.ToArray();
+    await request.File.CopyToAsync(ms, ct);
+    ms.Position = 0;
+
+    var docId = Guid.NewGuid();
+    var bucket = minioOptions.Value.BucketName;
+    var sanitizedExt = string.IsNullOrWhiteSpace(ext) ? ".bin" : ext.ToLowerInvariant();
+    var objectName = $"{docId:N}{sanitizedExt}";
 
     var doc = new Document
     {
-        Id = Guid.NewGuid(),
+        Id = docId,
         Name = name,
         OriginalFileName = request.File.FileName,
         ContentType = contentType,
-        SizeBytes = bytes.LongLength,
-        Content = bytes
+        SizeBytes = ms.Length,
+        StorageBucket = bucket,
+        StorageObjectName = objectName
     };
 
-    db.Documents.Add(doc);
-    await db.SaveChangesAsync();
-
-    // LOG Upload
-    log.LogInformation("Dokument wurde hochgeladen. Id={Id} Name={Name} SizeBytes={Size}", doc.Id, doc.Name, doc.SizeBytes);
-
-    // OCR-Request ins Topic (ins Nichts jetzt)
-    var ocrRequest = new
-    {
-        id = doc.Id,
-        originalFileName = doc.OriginalFileName,
-        contentType = doc.ContentType,
-        sizeBytes = doc.SizeBytes,
-        uploadedAtUtc = doc.UploadTime
-    };
+    ms.Position = 0;
     try
     {
-        await publisher.PublishAsync("ocr.request", ocrRequest);
+        await storage.UploadAsync(doc, ms, ct);
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "Upload in MinIO fehlgeschlagen. Id={Id}", doc.Id);
+        throw;
+    }
+
+    db.Documents.Add(doc);
+    try
+    {
+        await db.SaveChangesAsync(ct);
+    }
+    catch
+    {
+        await storage.DeleteAsync(doc, ct);
+        throw;
+    }
+
+    log.LogInformation("Dokument wurde hochgeladen. Id={Id} Name={Name} SizeBytes={Size}", doc.Id, doc.Name, doc.SizeBytes);
+
+    var ocrRequest = new OcrRequestMessage(
+        doc.Id,
+        doc.OriginalFileName,
+        doc.ContentType,
+        doc.SizeBytes,
+        doc.UploadTime);
+
+    try
+    {
+        await publisher.PublishAsync("ocr.request", ocrRequest, ct);
         log.LogInformation("OCR_REQUEST gepublished. Id={Id}", doc.Id);
     }
     catch (Exception ex)
@@ -273,27 +328,40 @@ api.MapPost("/documents", async (
         log.LogError(ex, "Publish OCR_REQUEST fehlgeschlagen. Id={Id}", doc.Id);
     }
 
-    // Nur id zur ck
     return Results.Created($"/api/documents/{doc.Id}", new { id = doc.Id });
 })
 .Accepts<DocumentUploadRequest>("multipart/form-data");
 
 // DELETE /api/documents/id
-api.MapDelete("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFactory lf) =>
+api.MapDelete("/documents/{id:guid}", async (
+    Guid id,
+    DMSG3_DbContext db,
+    IDocumentStorage storage,
+    ILoggerFactory lf,
+    CancellationToken ct) =>
 {
     var log = lf.CreateLogger("Documents");
-    var doc = await db.Documents.FindAsync(id);
+    var doc = await db.Documents.FindAsync(new object?[] { id }, ct);
     if (doc is null)
     {
-        log.LogWarning("Löschen: Dokument nicht gefunden. Id={Id}", id);
+        log.LogWarning("LÃ¶schen: Dokument nicht gefunden. Id={Id}", id);
         return Results.NotFound();
     }
 
     db.Documents.Remove(doc);
-    await db.SaveChangesAsync();
+    await db.SaveChangesAsync(ct);
+
+    try
+    {
+        await storage.DeleteAsync(doc, ct);
+    }
+    catch (Exception ex)
+    {
+        log.LogWarning(ex, "Datei konnte nicht aus MinIO entfernt werden. Id={Id}", id);
+    }
 
     // Logging: Delete
-    log.LogInformation("Dokument gelöscht. Id={Id} Name={Name}", id, doc.Name);
+    log.LogInformation("Dokument gelÃ¶scht. Id={Id} Name={Name}", id, doc.Name);
 
     return Results.NoContent();
 });

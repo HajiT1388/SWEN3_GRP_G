@@ -3,5 +3,6 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.9" />
+    <PackageVersion Include="Minio" Version="7.0.0" />
   </ItemGroup>
 </Project>
