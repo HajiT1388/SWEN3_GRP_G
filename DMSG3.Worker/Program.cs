@@ -1,3 +1,4 @@
+using DMSG3.Domain.Messaging;
 using DMSG3.Infrastructure;
 using DMSG3.Infrastructure.Storage;
 using DMSG3.Worker;

@@ -162,7 +162,9 @@ api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf, Cancellat
             d.SizeBytes,
             d.ContentType,
             d.OcrStatus,
-            d.OcrCompletedAt
+            d.OcrCompletedAt,
+            d.SummaryStatus,
+            d.SummaryCompletedAt
         ))
         .ToListAsync(ct);
 
@@ -187,7 +189,11 @@ api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFa
             d.OcrStatus,
             d.OcrCompletedAt,
             d.OcrText,
-            d.OcrError
+            d.OcrError,
+            d.SummaryStatus,
+            d.SummaryCompletedAt,
+            d.SummaryText,
+            d.SummaryError
         ))
         .FirstOrDefaultAsync(ct);
 

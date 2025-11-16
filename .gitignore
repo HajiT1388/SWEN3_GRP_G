@@ -21,3 +21,4 @@ _ReSharper*/
 *.pdb
 *.cache
 *.tlog
+.env

@@ -1,4 +1,4 @@
-﻿namespace DMSG3.Worker;
+﻿namespace DMSG3.Domain.Messaging;
 
 public class RabbitMqOptions
 {
@@ -9,4 +9,5 @@ public class RabbitMqOptions
     public string Exchange { get; set; } = "dmsg3.events";
     public string OcrQueue { get; set; } = "dmsg3.ocr.queue";
     public string ResultQueue { get; set; } = "dmsg3.result.queue";
+    public string SummaryQueue { get; set; } = "dmsg3.summary.queue";
 }

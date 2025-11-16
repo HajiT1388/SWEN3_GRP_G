@@ -38,6 +38,8 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
         Assert.True(doc.SizeBytes >= 1);
         Assert.Equal(DocumentOcrStatus.Completed, doc.OcrStatus);
         Assert.Equal("OCR TEXT", doc.OcrText);
+        Assert.Equal(DocumentSummaryStatus.Completed, doc.SummaryStatus);
+        Assert.Equal("SUMMARY TEXT", doc.SummaryText);
 
         var dl = await client.GetAsync($"/api/documents/{id}/download");
         Assert.Equal(HttpStatusCode.OK, dl.StatusCode);
@@ -70,7 +72,10 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
             UploadTime = DateTime.UtcNow,
             OcrStatus = DocumentOcrStatus.Completed,
             OcrText = "OCR TEXT",
-            OcrCompletedAt = DateTime.UtcNow
+            OcrCompletedAt = DateTime.UtcNow,
+            SummaryStatus = DocumentSummaryStatus.Completed,
+            SummaryText = "SUMMARY TEXT",
+            SummaryCompletedAt = DateTime.UtcNow
         };
         return new SeedDocument(doc, bytes);
     }

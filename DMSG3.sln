@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DMSG3.Tests", "DMSG3.Tests\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DMSG3.Worker", "DMSG3.Worker\DMSG3.Worker.csproj", "{AE8158EE-D70E-44E9-B993-7A410484FA79}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DMSG3.GenAIWorker", "DMSG3.GenAIWorker\DMSG3.GenAIWorker.csproj", "{80C6744D-68F8-4BE2-95F7-0D739396BB2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,18 @@ Global
 		{AE8158EE-D70E-44E9-B993-7A410484FA79}.Release|x64.Build.0 = Release|Any CPU
 		{AE8158EE-D70E-44E9-B993-7A410484FA79}.Release|x86.ActiveCfg = Release|Any CPU
 		{AE8158EE-D70E-44E9-B993-7A410484FA79}.Release|x86.Build.0 = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|x64.Build.0 = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Debug|x86.Build.0 = Debug|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|x64.ActiveCfg = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|x64.Build.0 = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|x86.ActiveCfg = Release|Any CPU
+		{80C6744D-68F8-4BE2-95F7-0D739396BB2D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

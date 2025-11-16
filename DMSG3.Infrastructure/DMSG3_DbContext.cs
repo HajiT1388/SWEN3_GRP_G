@@ -64,6 +64,20 @@ namespace DMSG3.Infrastructure
                 entity.Property(d => d.OcrError)
                     .HasColumnName("ocr_error");
 
+                entity.Property(d => d.SummaryStatus)
+                    .HasColumnName("summary_status")
+                    .HasDefaultValue(DocumentSummaryStatus.Pending)
+                    .IsRequired();
+
+                entity.Property(d => d.SummaryText)
+                    .HasColumnName("summary_text");
+
+                entity.Property(d => d.SummaryCompletedAt)
+                    .HasColumnName("summary_completed_at");
+
+                entity.Property(d => d.SummaryError)
+                    .HasColumnName("summary_error");
+
                 entity.Property(d => d.UploadTime)
                     .HasColumnName("upload_time")
                     .HasDefaultValueSql("now()");

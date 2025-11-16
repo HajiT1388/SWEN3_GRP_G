@@ -54,6 +54,8 @@ public class OcrRequestHandlerTests
         Assert.NotNull(result);
         Assert.Equal(DocumentOcrStatus.Completed, doc.OcrStatus);
         Assert.Equal("text", doc.OcrText);
+        Assert.Equal(DocumentSummaryStatus.Pending, doc.SummaryStatus);
+        Assert.Null(doc.SummaryText);
         Assert.Equal(0, fakeEngine.InvocationCount);
     }
 
@@ -87,7 +89,39 @@ public class OcrRequestHandlerTests
         Assert.NotNull(result);
         Assert.Equal(DocumentOcrStatus.Completed, doc.OcrStatus);
         Assert.Equal("PDF OCR TEXT", doc.OcrText);
+        Assert.Equal(DocumentSummaryStatus.Pending, doc.SummaryStatus);
         Assert.Equal(1, fakeEngine.InvocationCount);
+    }
+
+    [Fact]
+    public async Task Marks_summary_failed_when_ocr_fails()
+    {
+        await using var db = BuildDbContext(nameof(Marks_summary_failed_when_ocr_fails));
+        var storage = new InMemoryDocumentStorage();
+        var engine = new ThrowingOcrEngine();
+        var handler = new OcrRequestHandler(db, storage, engine, NullLogger<OcrRequestHandler>.Instance);
+
+        var doc = new Document
+        {
+            Id = Guid.NewGuid(),
+            Name = "broken",
+            OriginalFileName = "broken.pdf",
+            ContentType = "application/pdf",
+            SizeBytes = 8,
+            StorageBucket = "documents",
+            StorageObjectName = "broken.pdf"
+        };
+
+        db.Documents.Add(doc);
+        await db.SaveChangesAsync();
+
+        await storage.UploadAsync(doc, new MemoryStream(new byte[] { 5, 6, 7, 8 }), CancellationToken.None);
+
+        var message = new OcrRequestMessage(doc.Id, doc.OriginalFileName, doc.ContentType, doc.SizeBytes, DateTime.UtcNow);
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ProcessAsync(message, CancellationToken.None));
+        Assert.Equal(DocumentSummaryStatus.Failed, doc.SummaryStatus);
+        Assert.Equal("OCR fehlgeschlagen, keine Zusammenfassung.", doc.SummaryError);
     }
 
     private sealed class FakeOcrEngine : IOcrEngine
@@ -105,6 +139,14 @@ public class OcrRequestHandlerTests
             InvocationCount++;
             Assert.True(File.Exists(pdfPath));
             return Task.FromResult(_text);
+        }
+    }
+
+    private sealed class ThrowingOcrEngine : IOcrEngine
+    {
+        public Task<string> RecognizePdfAsync(string pdfPath, CancellationToken ct)
+        {
+            throw new InvalidOperationException("kaputt");
         }
     }
 }

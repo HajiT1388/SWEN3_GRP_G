@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using DMSG3.Domain.Messaging;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;

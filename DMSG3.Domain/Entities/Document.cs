@@ -28,6 +28,14 @@ namespace DMSG3.Domain.Entities
 
         public string? OcrError { get; set; }
 
+        public string SummaryStatus { get; set; } = DocumentSummaryStatus.Pending;
+
+        public string? SummaryText { get; set; }
+
+        public DateTime? SummaryCompletedAt { get; set; }
+
+        public string? SummaryError { get; set; }
+
         public DateTime UploadTime { get; set; } = DateTime.UtcNow;
     }
 }

@@ -14,6 +14,7 @@ start "" "http://localhost/"
 
 start "REST Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rest"
 start "OCR Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f dmsg3-services"
+start "GenAI Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f genai-worker"
 start "RabbitMQ Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f rabbitmq"
 start "MinIO Logs" cmd /k "pushd ""%~dp0"" && docker compose --ansi never logs -f minio"
 
