@@ -155,6 +155,12 @@
     return `<span class="status-badge status-${normalized || 'unknown'}">${label}</span>${extra}`;
   }
 
+  function needsRefresh(status) {
+    const normalized = (status || '').toLowerCase();
+    if (!normalized) return false;
+    return normalized !== 'completed' && normalized !== 'failed';
+  }
+
   function renderList() {
     setTitle('list');
     root.innerHTML = `
@@ -208,6 +214,7 @@
             <th scope="col">Größe</th> 
             <th scope="col">Typ</th>
             <th scope="col">OCR</th>
+            <th scope="col">Summary</th>
             <th scope="col">Upload</th>
             <th scope="col">Aktion</th>
           </tr>
@@ -225,6 +232,7 @@
                 <td>${formatBytes(d.sizeBytes)}</td>
                 <td>${d.contentType || '—'}</td>
                 <td>${renderStatusBadge(d.ocrStatus, d.ocrCompletedAt)}</td>
+                <td>${renderStatusBadge(d.summaryStatus, d.summaryCompletedAt)}</td>
                 <td>${uploaded}</td>
                 <td>
                   ${id ? `
@@ -478,6 +486,8 @@
           </div>
           <p><strong>OCR-Status:</strong> ${renderStatusBadge(d.ocrStatus, d.ocrCompletedAt)} ${d.ocrError ? `<span class="status-muted">${escapeHtml(d.ocrError)}</span>` : ''}</p>
           ${d.ocrText ? `<div class="ocr-preview"><div class="lbl"><strong>OCR-Vorschau:</strong></div><pre>${escapeHtml(d.ocrText)}</pre></div>` : ''}
+          <p><strong>Summary-Status:</strong> ${renderStatusBadge(d.summaryStatus, d.summaryCompletedAt)} ${d.summaryError ? `<span class="status-muted">${escapeHtml(d.summaryError)}</span>` : ''}</p>
+          ${d.summaryText ? `<div class="ocr-preview"><div class="lbl"><strong>KI-Zusammenfassung:</strong></div><pre>${escapeHtml(d.summaryText)}</pre></div>` : ''}
           <div id="preview" style="margin-top:12px;"></div>
         `;
 
@@ -515,7 +525,7 @@
           refreshHandle = null;
         }
 
-        if (d.ocrStatus && !['completed', 'failed'].includes((d.ocrStatus || '').toLowerCase())) {
+        if (needsRefresh(d.ocrStatus) || needsRefresh(d.summaryStatus)) {
           refreshHandle = setTimeout(() => fetchDetails(), 5000);
         }
       } catch (e) {

@@ -3,6 +3,7 @@ using System;
 using DMSG3.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DMSG3.Infrastructure.Migrations
 {
     [DbContext(typeof(DMSG3_DbContext))]
-    partial class DMSG3_DbContextModelSnapshot : ModelSnapshot
+    [Migration("20251202101500_AddDocumentSummaries")]
+    partial class AddDocumentSummaries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,13 +44,13 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<string>("OcrError")
-                        .HasColumnType("text")
-                        .HasColumnName("ocr_error");
-
                     b.Property<DateTime?>("OcrCompletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ocr_completed_at");
+
+                    b.Property<string>("OcrError")
+                        .HasColumnType("text")
+                        .HasColumnName("ocr_error");
 
                     b.Property<DateTime?>("OcrStartedAt")
                         .HasColumnType("timestamp with time zone")
@@ -62,24 +65,6 @@ namespace DMSG3.Infrastructure.Migrations
                     b.Property<string>("OcrText")
                         .HasColumnType("text")
                         .HasColumnName("ocr_text");
-
-                    b.Property<DateTime?>("SummaryCompletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("summary_completed_at");
-
-                    b.Property<string>("SummaryError")
-                        .HasColumnType("text")
-                        .HasColumnName("summary_error");
-
-                    b.Property<string>("SummaryStatus")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("summary_status")
-                        .HasDefaultValue("Pending");
-
-                    b.Property<string>("SummaryText")
-                        .HasColumnType("text")
-                        .HasColumnName("summary_text");
 
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
@@ -99,6 +84,24 @@ namespace DMSG3.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("storage_object_name");
+
+                    b.Property<DateTime?>("SummaryCompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("summary_completed_at");
+
+                    b.Property<string>("SummaryError")
+                        .HasColumnType("text")
+                        .HasColumnName("summary_error");
+
+                    b.Property<string>("SummaryStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("summary_status")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<string>("SummaryText")
+                        .HasColumnType("text")
+                        .HasColumnName("summary_text");
 
                     b.Property<DateTime>("UploadTime")
                         .ValueGeneratedOnAdd()

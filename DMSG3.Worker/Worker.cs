@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
+using DMSG3.Domain.Entities;
 using DMSG3.Domain.Messaging;
 using DMSG3.Worker.Ocr;
 using Microsoft.Extensions.Options;
@@ -69,6 +70,12 @@ public class Worker : BackgroundService
                 _ch.QueueDeclare(_opt.ResultQueue, durable: true, exclusive: false, autoDelete: false);
                 _ch.QueueBind(_opt.ResultQueue, _opt.Exchange, routingKey: "ocr.result");
 
+                if (!string.IsNullOrWhiteSpace(_opt.SummaryQueue))
+                {
+                    _ch.QueueDeclare(_opt.SummaryQueue, durable: true, exclusive: false, autoDelete: false);
+                    _ch.QueueBind(_opt.SummaryQueue, _opt.Exchange, routingKey: "summary.request");
+                }
+
                 _ch.BasicQos(0, 1, false);
 
                 var consumer = new AsyncEventingBasicConsumer(_ch);
@@ -127,6 +134,10 @@ public class Worker : BackgroundService
         if (result != null)
         {
             PublishResult(result);
+            if (string.Equals(result.Status, DocumentOcrStatus.Completed, StringComparison.OrdinalIgnoreCase))
+            {
+                PublishSummaryRequest(result.DocumentId);
+            }
         }
     }
 
@@ -147,6 +158,23 @@ public class Worker : BackgroundService
         var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(payload, _serializerOptions));
         _ch.BasicPublish(_opt.Exchange, "ocr.result", props, bytes);
         _log.LogInformation("OCR_RESULT gesendet. Dokument={DocumentId} Status={Status}", result.DocumentId, result.Status);
+    }
+
+    private void PublishSummaryRequest(Guid documentId)
+    {
+        if (_ch is null) return;
+        if (string.IsNullOrWhiteSpace(_opt.SummaryQueue))
+        {
+            _log.LogWarning("SummaryQueue ist nicht konfiguriert. DocumentId={DocumentId}", documentId);
+            return;
+        }
+
+        var message = new SummaryRequestMessage(documentId);
+        var props = _ch.CreateBasicProperties();
+        props.Persistent = true;
+        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message, _serializerOptions));
+        _ch.BasicPublish(_opt.Exchange, "summary.request", props, bytes);
+        _log.LogInformation("SUMMARY_REQUEST gesendet. Dokument={DocumentId}", documentId);
     }
 
     public override void Dispose()

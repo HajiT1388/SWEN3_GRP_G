@@ -71,6 +71,10 @@ public class OcrRequestHandler
             doc.OcrText = truncated;
             doc.OcrStatus = DocumentOcrStatus.Completed;
             doc.OcrCompletedAt = DateTime.UtcNow;
+            doc.SummaryStatus = DocumentSummaryStatus.Pending;
+            doc.SummaryText = null;
+            doc.SummaryError = null;
+            doc.SummaryCompletedAt = null;
             await _db.SaveChangesAsync(ct);
 
             return new OcrProcessingResult(doc.Id, doc.OcrStatus, BuildPreview(truncated), doc.OcrCompletedAt);
@@ -80,6 +84,10 @@ public class OcrRequestHandler
             doc.OcrStatus = DocumentOcrStatus.Failed;
             doc.OcrError = ex.Message;
             doc.OcrCompletedAt = DateTime.UtcNow;
+            doc.SummaryStatus = DocumentSummaryStatus.Failed;
+            doc.SummaryError = "OCR fehlgeschlagen, keine Zusammenfassung.";
+            doc.SummaryCompletedAt = DateTime.UtcNow;
+            doc.SummaryText = null;
             await _db.SaveChangesAsync(ct);
             _logger.LogError(ex, "OCR fehlgeschlagen. Id={Id}", doc.Id);
             throw;

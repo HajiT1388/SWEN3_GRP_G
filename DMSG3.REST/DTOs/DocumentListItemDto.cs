@@ -7,5 +7,7 @@ public record DocumentListItemDto(
     long SizeBytes,
     string ContentType,
     string OcrStatus,
-    DateTime? OcrCompletedAt
+    DateTime? OcrCompletedAt,
+    string SummaryStatus,
+    DateTime? SummaryCompletedAt
 );

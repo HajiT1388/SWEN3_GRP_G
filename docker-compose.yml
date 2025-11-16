@@ -76,6 +76,7 @@ services:
       RabbitMq__Exchange: "dmsg3.events"
       RabbitMq__OcrQueue: "dmsg3.ocr.queue"
       RabbitMq__ResultQueue: "dmsg3.result.queue"
+      RabbitMq__SummaryQueue: "dmsg3.summary.queue"
       Minio__Endpoint: "minio:9000"
       Minio__AccessKey: "dmsg3dmsg3"
       Minio__SecretKey: "dmsg3dmsg3"
@@ -105,6 +106,7 @@ services:
       RabbitMq__Exchange: "dmsg3.events"
       RabbitMq__OcrQueue: "dmsg3.ocr.queue"
       RabbitMq__ResultQueue: "dmsg3.result.queue"
+      RabbitMq__SummaryQueue: "dmsg3.summary.queue"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
       Minio__Endpoint: "minio:9000"
       Minio__AccessKey: "dmsg3dmsg3"
@@ -115,6 +117,34 @@ services:
       Ocr__TesseractExecutable: "tesseract"
     ports:
       - "8082:8082"
+    restart: unless-stopped
+
+  genai-worker:
+    build:
+      context: .
+      dockerfile: DMSG3.GenAIWorker/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
+      RabbitMq__HostName: "rabbitmq"
+      RabbitMq__Port: 5672
+      RabbitMq__UserName: "dmsg3"
+      RabbitMq__Password: "dmsg3"
+      RabbitMq__Exchange: "dmsg3.events"
+      RabbitMq__SummaryQueue: "dmsg3.summary.queue"
+      GenAi__BaseUrl: "https://generativelanguage.googleapis.com/"
+      GenAi__Model: "gemini-2.0-flash-lite"
+      GenAi__SystemPrompt: "Fasse den Dokumententext kurz und sachlich auf deutsch zusammen. Verwende kein Markdown, sondern ausschließlich unformatierten Text."
+      GenAi__MaxOutputTokens: 1024
+      GenAi__Temperature: 0.2
+      GenAi__RequestTimeoutSeconds: 30
+      GenAi__InputMaxCharacters: 4000
+      GenAi__ApiKey: "${GENAI_API_KEY}"
     restart: unless-stopped
 
   ui:

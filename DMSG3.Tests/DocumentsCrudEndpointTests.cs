@@ -43,6 +43,7 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.Contains(docs, d => d.Name == "yes");
         Assert.Contains(docs, d => d.Name == "no");
         Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.OcrStatus)));
+        Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.SummaryStatus)));
     }
 
     private static SeedDocument BuildSeedDocument(Guid? id, string name, string fileName, string content, string contentType = "text/plain; charset=utf-8")
@@ -106,6 +107,7 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.Equal("documents", inDb.StorageBucket);
         Assert.False(string.IsNullOrWhiteSpace(inDb.StorageObjectName));
         Assert.Equal(DocumentOcrStatus.Pending, inDb.OcrStatus);
+        Assert.Equal(DocumentSummaryStatus.Pending, inDb.SummaryStatus);
 
         Assert.True(_factory.DocumentStorage.TryGet(inDb.Id, out var storedBytes));
         Assert.Equal("123", Encoding.UTF8.GetString(storedBytes!));

@@ -10,5 +10,9 @@ public record DocumentDetailsDto(
     string OcrStatus,
     DateTime? OcrCompletedAt,
     string? OcrText,
-    string? OcrError
+    string? OcrError,
+    string SummaryStatus,
+    DateTime? SummaryCompletedAt,
+    string? SummaryText,
+    string? SummaryError
 );
