@@ -31,75 +31,60 @@ function startShaderBackground(canvasId) {
     }
   `;
 
-const fragSrc = `
-  precision mediump float;
+  const fragSrc = `
+    precision mediump float;
 
-  uniform float u_time;
-  uniform vec2 u_res;
+    uniform float u_time;
+    uniform vec2 u_res;
 
-  const int NUM_EXPLOSIONS = 4;
-  const int NUM_PARTICLES  = 100;
+    void main() {
+      vec2 resolution = u_res;
+      vec2 uv = gl_FragCoord.xy / resolution.xy;
 
-  vec2 Hash12(float t) {
-    float x = fract(sin(t * 456.51) * 195.23);
-    float y = fract(sin((t + x) * 951.2) * 462.1);
-    return vec2(x, y);
-  }
+      float aspect = resolution.x / resolution.y;
+      vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
 
-  vec2 Hash12_Polar(float t) {
-    float a = fract(sin(t * 456.51) * 195.23) * 6.28318530718;
-    float r = fract(sin((t + a) * 951.2) * 462.1);
-    return vec2(sin(a), cos(a)) * r;
-  }
-    
-  vec3 hsv2rgb(vec3 c) {
-    vec3 p = abs(fract(c.x + vec3(0.0, 2.0/3.0, 1.0/3.0)) * 6.0 - 3.0);
-    vec3 rgb = clamp(p - 1.0, 0.0, 1.0);
-    return c.z * mix(vec3(1.0), rgb, c.y);
-  }
+      float t = u_time * 0.08;
 
-  float Explosion(vec2 uv, float t) {
-    float sparks = 0.0;
-    for (int i = 0; i < NUM_PARTICLES; i++) {
-      float fi = float(i);
-      vec2 dir = Hash12_Polar(fi + 1.0) * 0.5;
-      float d = length(uv - dir * t);
+      vec3 baseBottom = vec3(0.01, 0.01, 0.03);
+      vec3 baseTop    = vec3(0.03, 0.06, 0.14);
+      float gy = smoothstep(-0.3, 1.1, uv.y + uv.x * 0.1);
+      vec3 col = mix(baseBottom, baseTop, gy);
 
-      float brightness = mix(0.0003, 0.001, smoothstep(0.05, 0.0, t));
-      brightness *= sin(t * 20.0 + fi) * 0.5 + 0.5;
-      brightness *= smoothstep(1.0, 0.7, t);
-      sparks += brightness / d;
+      vec2 c1 = vec2(0.30, 0.45) + 0.10 * vec2(sin(t * 0.7), cos(t * 0.6));
+      vec2 c2 = vec2(0.70, 0.65) + 0.12 * vec2(cos(t * 0.4), sin(t * 0.5));
+      vec2 c3 = vec2(0.50, 0.30) + 0.15 * vec2(sin(t * 0.3), sin(t * 0.9));
+
+      vec2 cp1 = (c1 - 0.5) * vec2(aspect, 1.0);
+      vec2 cp2 = (c2 - 0.5) * vec2(aspect, 1.0);
+      vec2 cp3 = (c3 - 0.5) * vec2(aspect, 1.0);
+
+      float d1 = length(p - cp1);
+      float d2 = length(p - cp2);
+      float d3 = length(p - cp3);
+
+      float glow1 = exp(-3.5 * d1 * d1);
+      float glow2 = exp(-3.0 * d2 * d2);
+      float glow3 = exp(-4.0 * d3 * d3);
+
+      vec3 col1 = vec3(0.20, 0.55, 1.00);
+      vec3 col2 = vec3(0.95, 0.40, 0.90);
+      vec3 col3 = vec3(0.25, 0.95, 0.75);
+
+      col += col1 * glow1;
+      col += col2 * glow2;
+      col += col3 * glow3;
+
+      float r = length(p);
+      float vignette = smoothstep(0.6, 1.3, r);
+      col *= (1.0 - 0.45 * vignette);
+
+      col = pow(col, vec3(1.0 / 1.1));
+      col = clamp(col, 0.0, 1.0);
+
+      gl_FragColor = vec4(col, 1.0);
     }
-    return sparks;
-  }
-
-  void main() {
-    vec2 resolution = u_res;
-    float time = u_time * 0.05;
-
-    vec2 uv = (gl_FragCoord.xy - 0.5 * resolution.xy) / resolution.y;
-    vec3 col = vec3(0.0);
-
-    for (int i = 0; i < NUM_EXPLOSIONS; i++) {
-      float fi = float(i);
-      float t  = (time / 1.5) + (fi * 123.4) / float(NUM_EXPLOSIONS);
-      float ft = floor(t);
-
-      float rnd = Hash12(fi + 17.123 + ft * float(NUM_EXPLOSIONS)).x;
-      float hue = mix(0.64, 0.83, rnd);
-      float sat = 0.3;
-      float val = 0.5;
-      vec3 colour = hsv2rgb(vec3(hue, sat, val));
-
-      vec2 offset = Hash12(fi + 1.0 + ft * float(NUM_EXPLOSIONS)) - 0.5;
-      offset *= vec2(0.9 * 1.777, 0.9);
-      col += Explosion(uv - offset, fract(t)) * colour;
-    }
-
-    col *= 2.0;
-    gl_FragColor = vec4(col, 1.0);
-  }
-`;
+  `;
 
   function compile(type, src) {
     const sh = gl.createShader(type);

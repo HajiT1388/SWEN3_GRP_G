@@ -13,7 +13,7 @@ COPY . .
 WORKDIR /src/DMSG3.GenAIWorker
 RUN dotnet publish "DMSG3.GenAIWorker.csproj" -c Release -o /out
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS final
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS final
 WORKDIR /app
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "DMSG3.GenAIWorker.dll"]

@@ -13,7 +13,7 @@ COPY . .
 WORKDIR /src/DMSG3.Worker
 RUN dotnet publish "DMSG3.Worker.csproj" -c Release -o /out
 
-FROM mcr.microsoft.com/dotnet/runtime:8.0 AS final
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS final
 WORKDIR /app
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
