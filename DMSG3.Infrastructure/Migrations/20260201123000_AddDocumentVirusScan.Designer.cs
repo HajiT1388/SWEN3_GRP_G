@@ -3,6 +3,7 @@ using System;
 using DMSG3.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DMSG3.Infrastructure.Migrations
 {
     [DbContext(typeof(DMSG3_DbContext))]
-    partial class DMSG3_DbContextModelSnapshot : ModelSnapshot
+    [Migration("20260201123000_AddDocumentVirusScan")]
+    partial class AddDocumentVirusScan
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,13 +44,13 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("name");
 
-                    b.Property<string>("OcrError")
-                        .HasColumnType("text")
-                        .HasColumnName("ocr_error");
-
                     b.Property<DateTime?>("OcrCompletedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("ocr_completed_at");
+
+                    b.Property<string>("OcrError")
+                        .HasColumnType("text")
+                        .HasColumnName("ocr_error");
 
                     b.Property<DateTime?>("OcrStartedAt")
                         .HasColumnType("timestamp with time zone")
@@ -62,46 +65,6 @@ namespace DMSG3.Infrastructure.Migrations
                     b.Property<string>("OcrText")
                         .HasColumnType("text")
                         .HasColumnName("ocr_text");
-
-                    b.Property<DateTime?>("SummaryCompletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("summary_completed_at");
-
-                    b.Property<string>("SummaryError")
-                        .HasColumnType("text")
-                        .HasColumnName("summary_error");
-
-                    b.Property<string>("SummaryStatus")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("summary_status")
-                        .HasDefaultValue("Pending");
-
-                    b.Property<string>("SummaryText")
-                        .HasColumnType("text")
-                        .HasColumnName("summary_text");
-
-                    b.Property<string>("VirusScanAnalysisId")
-                        .HasColumnType("text")
-                        .HasColumnName("virus_scan_analysis_id");
-
-                    b.Property<DateTime?>("VirusScanCompletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("virus_scan_completed_at");
-
-                    b.Property<string>("VirusScanError")
-                        .HasColumnType("text")
-                        .HasColumnName("virus_scan_error");
-
-                    b.Property<DateTime?>("VirusScanStartedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("virus_scan_started_at");
-
-                    b.Property<string>("VirusScanStatus")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("virus_scan_status")
-                        .HasDefaultValue("NotScanned");
 
                     b.Property<string>("OriginalFileName")
                         .IsRequired()
@@ -122,11 +85,47 @@ namespace DMSG3.Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("storage_object_name");
 
+                    b.Property<DateTime?>("SummaryCompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("summary_completed_at");
+
+                    b.Property<string>("SummaryError")
+                        .HasColumnType("text")
+                        .HasColumnName("summary_error");
+
+                    b.Property<string>("SummaryStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("summary_status")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<string>("SummaryText")
+                        .HasColumnType("text")
+                        .HasColumnName("summary_text");
+
                     b.Property<DateTime>("UploadTime")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("upload_time")
                         .HasDefaultValueSql("now()");
+
+                    b.Property<DateTime?>("VirusScanCompletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("virus_scan_completed_at");
+
+                    b.Property<string>("VirusScanError")
+                        .HasColumnType("text")
+                        .HasColumnName("virus_scan_error");
+
+                    b.Property<DateTime?>("VirusScanStartedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("virus_scan_started_at");
+
+                    b.Property<string>("VirusScanStatus")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("virus_scan_status")
+                        .HasDefaultValue("NotScanned");
 
                     b.HasKey("Id");
 

@@ -36,6 +36,16 @@ namespace DMSG3.Domain.Entities
 
         public string? SummaryError { get; set; }
 
+        public string VirusScanStatus { get; set; } = DocumentVirusScanStatus.NotScanned;
+
+        public DateTime? VirusScanStartedAt { get; set; }
+
+        public DateTime? VirusScanCompletedAt { get; set; }
+
+        public string? VirusScanError { get; set; }
+
+        public string? VirusScanAnalysisId { get; set; }
+
         public DateTime UploadTime { get; set; } = DateTime.UtcNow;
     }
 }

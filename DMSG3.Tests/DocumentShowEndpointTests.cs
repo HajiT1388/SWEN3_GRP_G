@@ -40,6 +40,7 @@ public class DocumentShowEndpointTests : IClassFixture<TestWebApplicationFactory
         Assert.Equal("OCR TEXT", doc.OcrText);
         Assert.Equal(DocumentSummaryStatus.Completed, doc.SummaryStatus);
         Assert.Equal("SUMMARY TEXT", doc.SummaryText);
+        Assert.Equal(DocumentVirusScanStatus.NotScanned, doc.VirusScanStatus);
 
         var dl = await client.GetAsync($"/api/documents/{id}/download");
         Assert.Equal(HttpStatusCode.OK, dl.StatusCode);

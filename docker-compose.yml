@@ -114,6 +114,7 @@ services:
       Minio__SecretKey: "dmsg3dmsg3"
       Minio__UseSsl: "false"
       Minio__BucketName: "documents"
+      Vt__ApiKey: "${VT_API_KEY}"
     ports:
       - "8081:8080"
     restart: unless-stopped
@@ -174,7 +175,7 @@ services:
       RabbitMq__Exchange: "dmsg3.events"
       RabbitMq__SummaryQueue: "dmsg3.summary.queue"
       GenAi__BaseUrl: "https://generativelanguage.googleapis.com/"
-      GenAi__Model: "gemini-2.0-flash-lite"
+      GenAi__Model: "gemini-2.5-flash-lite"
       GenAi__SystemPrompt: "Fasse den Dokumententext kurz und sachlich auf deutsch zusammen. Verwende kein Markdown, sondern ausschließlich unformatierten Text."
       GenAi__MaxOutputTokens: 1024
       GenAi__Temperature: 0.2
@@ -185,7 +186,7 @@ services:
 
   ui:
     build:
-      context: ./UI
+      context: ./ui
     depends_on:
       rest:
         condition: service_started

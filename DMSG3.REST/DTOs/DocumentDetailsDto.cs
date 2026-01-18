@@ -14,5 +14,8 @@ public record DocumentDetailsDto(
     string SummaryStatus,
     DateTime? SummaryCompletedAt,
     string? SummaryText,
-    string? SummaryError
+    string? SummaryError,
+    string VirusScanStatus,
+    DateTime? VirusScanCompletedAt,
+    string? VirusScanError
 );

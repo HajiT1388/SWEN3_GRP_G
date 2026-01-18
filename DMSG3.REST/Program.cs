@@ -6,6 +6,7 @@ using DMSG3.Infrastructure.Storage;
 using DMSG3.REST.DTOs;
 using DMSG3.REST.Logging;
 using DMSG3.REST.Messaging;
+using DMSG3.REST.VirusTotal;
 using Elastic.Clients.Elasticsearch;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,23 @@ else
     });
     builder.Services.AddSingleton<IDocumentStorage, MinioDocumentStorage>();
 }
+
+builder.Services.Configure<VirusTotalOptions>(builder.Configuration.GetSection("Vt"));
+builder.Services.AddHttpClient<VirusTotalClient>((sp, client) =>
+{
+    var options = sp.GetRequiredService<IOptions<VirusTotalOptions>>().Value;
+    var baseUrl = string.IsNullOrWhiteSpace(options.BaseUrl)
+        ? "https://www.virustotal.com/api/v3/"
+        : options.BaseUrl.Trim();
+    if (!baseUrl.EndsWith("/", StringComparison.Ordinal))
+    {
+        baseUrl += "/";
+    }
+
+    client.BaseAddress = new Uri(baseUrl);
+    client.Timeout = TimeSpan.FromSeconds(Math.Max(5, options.RequestTimeoutSeconds));
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("DMSG3-REST");
+});
 
 // RabbitMQ & Publisher
 builder.Services.Configure<RabbitMqOptions>(builder.Configuration.GetSection("RabbitMq"));
@@ -179,7 +197,10 @@ api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf, Cancellat
             d.OcrStatus,
             d.OcrCompletedAt,
             d.SummaryStatus,
-            d.SummaryCompletedAt
+            d.SummaryCompletedAt,
+            d.SummaryError,
+            d.VirusScanStatus,
+            d.VirusScanCompletedAt
         ))
         .ToListAsync(ct);
 
@@ -211,7 +232,10 @@ api.MapGet("/documents/search", async (
                 d.OcrStatus,
                 d.OcrCompletedAt,
                 d.SummaryStatus,
-                d.SummaryCompletedAt
+                d.SummaryCompletedAt,
+                d.SummaryError,
+                d.VirusScanStatus,
+                d.VirusScanCompletedAt
             ))
             .ToListAsync(ct);
         return Results.Ok(allItems);
@@ -240,7 +264,10 @@ api.MapGet("/documents/search", async (
             d.OcrStatus,
             d.OcrCompletedAt,
             d.SummaryStatus,
-            d.SummaryCompletedAt
+            d.SummaryCompletedAt,
+            d.SummaryError,
+            d.VirusScanStatus,
+            d.VirusScanCompletedAt
         ))
         .OrderByDescending(d => scores.TryGetValue(d.Id, out var score) ? score : 0d)
         .ThenByDescending(d => d.UploadTime)
@@ -271,7 +298,10 @@ api.MapGet("/documents/{id:guid}", async (Guid id, DMSG3_DbContext db, ILoggerFa
             d.SummaryStatus,
             d.SummaryCompletedAt,
             d.SummaryText,
-            d.SummaryError
+            d.SummaryError,
+            d.VirusScanStatus,
+            d.VirusScanCompletedAt,
+            d.VirusScanError
         ))
         .FirstOrDefaultAsync(ct);
 
@@ -318,6 +348,103 @@ api.MapGet("/documents/{id:guid}/download", async (
     var ext = Path.GetExtension(doc.OriginalFileName);
     var suggestedName = string.IsNullOrWhiteSpace(ext) ? doc.Name : $"{doc.Name}{ext}";
     return Results.File(stream, doc.ContentType, suggestedName, enableRangeProcessing: true);
+});
+
+// POST /api/documents/id/virus-scan
+api.MapPost("/documents/{id:guid}/virus-scan", async (
+    Guid id,
+    DMSG3_DbContext db,
+    IDocumentStorage storage,
+    VirusTotalClient virusTotalClient,
+    ILoggerFactory lf,
+    CancellationToken ct) =>
+{
+    var log = lf.CreateLogger("VirusScan");
+    var doc = await db.Documents.FindAsync(new object?[] { id }, ct);
+    if (doc is null)
+    {
+        log.LogWarning("Virenscan: Dokument nicht gefunden. Id={Id}", id);
+        return Results.NotFound();
+    }
+
+    var status = doc.VirusScanStatus ?? DocumentVirusScanStatus.NotScanned;
+    if (status == DocumentVirusScanStatus.Clean || status == DocumentVirusScanStatus.Malicious)
+    {
+        return Results.Conflict("Dokument wurde bereits virengescannt.");
+    }
+    if (status == DocumentVirusScanStatus.Scanning)
+    {
+        if (string.IsNullOrWhiteSpace(doc.VirusScanAnalysisId))
+        {
+            doc.VirusScanStatus = DocumentVirusScanStatus.Failed;
+            doc.VirusScanError = "Analyse-ID fehlt.";
+            doc.VirusScanCompletedAt = DateTime.UtcNow;
+            await db.SaveChangesAsync(ct);
+            return Results.Problem("Virenscan konnte nicht geprüft werden.", statusCode: StatusCodes.Status502BadGateway);
+        }
+
+        try
+        {
+            var result = await virusTotalClient.CheckAnalysisAsync(doc.VirusScanAnalysisId, ct);
+            doc.VirusScanStatus = result.Status;
+            doc.VirusScanError = result.Status == DocumentVirusScanStatus.Scanning ? doc.VirusScanError : null;
+            if (result.Status != DocumentVirusScanStatus.Scanning)
+            {
+                doc.VirusScanCompletedAt = DateTime.UtcNow;
+            }
+            await db.SaveChangesAsync(ct);
+
+            return Results.Ok(new
+            {
+                status = doc.VirusScanStatus,
+                completedAt = doc.VirusScanCompletedAt,
+                maliciousCount = result.MaliciousCount,
+                suspiciousCount = result.SuspiciousCount,
+                analysisStatus = result.AnalysisStatus
+            });
+        }
+        catch (Exception ex)
+        {
+            log.LogError(ex, "Virenscan-Status fehlgeschlagen. Id={Id}", doc.Id);
+            doc.VirusScanError = ex.Message;
+            await db.SaveChangesAsync(ct);
+            return Results.Problem("Virenscan-Status fehlgeschlagen.", statusCode: StatusCodes.Status502BadGateway);
+        }
+    }
+
+    doc.VirusScanStatus = DocumentVirusScanStatus.Scanning;
+    doc.VirusScanStartedAt = DateTime.UtcNow;
+    doc.VirusScanCompletedAt = null;
+    doc.VirusScanError = null;
+    doc.VirusScanAnalysisId = null;
+    await db.SaveChangesAsync(ct);
+
+    try
+    {
+        await using var stream = await storage.DownloadAsync(doc, ct);
+        var submission = await virusTotalClient.SubmitAsync(doc, stream, ct);
+        doc.VirusScanAnalysisId = submission.AnalysisId;
+        await db.SaveChangesAsync(ct);
+
+        log.LogInformation("Virenscan gestartet. Id={Id} AnalysisId={AnalysisId}", doc.Id, doc.VirusScanAnalysisId);
+        return Results.Ok(new
+        {
+            status = doc.VirusScanStatus,
+            completedAt = doc.VirusScanCompletedAt,
+            maliciousCount = (int?)null,
+            suspiciousCount = (int?)null,
+            analysisStatus = "submitted"
+        });
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "Virenscan fehlgeschlagen. Id={Id}", doc.Id);
+        doc.VirusScanStatus = DocumentVirusScanStatus.Failed;
+        doc.VirusScanCompletedAt = DateTime.UtcNow;
+        doc.VirusScanError = ex.Message;
+        await db.SaveChangesAsync(ct);
+        return Results.Problem("Virenscan fehlgeschlagen.", statusCode: StatusCodes.Status502BadGateway);
+    }
 });
 
 // POST /api/documents multipart/form-data Upload

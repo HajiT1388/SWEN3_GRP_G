@@ -31,60 +31,56 @@ function startShaderBackground(canvasId) {
     }
   `;
 
-  const fragSrc = `
-    precision mediump float;
+ const fragSrc = `
+  precision mediump float;
 
-    uniform float u_time;
-    uniform vec2 u_res;
+  uniform float u_time;
+  uniform vec2 u_res;
 
-    void main() {
-      vec2 resolution = u_res;
-      vec2 uv = gl_FragCoord.xy / resolution.xy;
+  void main() {
+    vec2 resolution = u_res;
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
 
-      float aspect = resolution.x / resolution.y;
-      vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
+    float aspect = resolution.x / resolution.y;
+    vec2 p = (uv - 0.5) * vec2(aspect, 1.0);
 
-      float t = u_time * 0.08;
+    float t = u_time * 0.5;
 
-      vec3 baseBottom = vec3(0.01, 0.01, 0.03);
-      vec3 baseTop    = vec3(0.03, 0.06, 0.14);
-      float gy = smoothstep(-0.3, 1.1, uv.y + uv.x * 0.1);
-      vec3 col = mix(baseBottom, baseTop, gy);
+    vec3 baseBottom = vec3(0.01, 0.01, 0.03);
+    vec3 baseTop    = vec3(0.03, 0.06, 0.14);
+    float gy = smoothstep(-0.3, 1.1, uv.y + uv.x * 0.1);
+    vec3 col = mix(baseBottom, baseTop, gy);
 
-      vec2 c1 = vec2(0.30, 0.45) + 0.10 * vec2(sin(t * 0.7), cos(t * 0.6));
-      vec2 c2 = vec2(0.70, 0.65) + 0.12 * vec2(cos(t * 0.4), sin(t * 0.5));
-      vec2 c3 = vec2(0.50, 0.30) + 0.15 * vec2(sin(t * 0.3), sin(t * 0.9));
+    vec2 c1 = vec2(0.30, 0.45) + 0.10 * vec2(sin(t * 0.7), cos(t * 0.6));
+    vec2 c2 = vec2(0.70, 0.65) + 0.12 * vec2(cos(t * 0.4), sin(t * 0.5));
+    vec2 c3 = vec2(0.50, 0.30) + 0.15 * vec2(sin(t * 0.3), sin(t * 0.9));
 
-      vec2 cp1 = (c1 - 0.5) * vec2(aspect, 1.0);
-      vec2 cp2 = (c2 - 0.5) * vec2(aspect, 1.0);
-      vec2 cp3 = (c3 - 0.5) * vec2(aspect, 1.0);
+    vec2 cp1 = (c1 - 0.5) * vec2(aspect, 1.0);
+    vec2 cp2 = (c2 - 0.5) * vec2(aspect, 1.0);
+    vec2 cp3 = (c3 - 0.5) * vec2(aspect, 1.0);
 
-      float d1 = length(p - cp1);
-      float d2 = length(p - cp2);
-      float d3 = length(p - cp3);
+    float d1 = length(p - cp1);
+    float d2 = length(p - cp2);
+    float d3 = length(p - cp3);
 
-      float glow1 = exp(-3.5 * d1 * d1);
-      float glow2 = exp(-3.0 * d2 * d2);
-      float glow3 = exp(-4.0 * d3 * d3);
+    float glow1 = exp(-3.5 * d1 * d1);
+    float glow2 = exp(-3.0 * d2 * d2);
+    float glow3 = exp(-4.0 * d3 * d3);
 
-      vec3 col1 = vec3(0.20, 0.55, 1.00);
-      vec3 col2 = vec3(0.95, 0.40, 0.90);
-      vec3 col3 = vec3(0.25, 0.95, 0.75);
+    vec3 col1 = vec3(0.20, 0.55, 1.00);
+    vec3 col2 = vec3(0.95, 0.40, 0.90);
+    vec3 col3 = vec3(0.25, 0.95, 0.75);
 
-      col += col1 * glow1;
-      col += col2 * glow2;
-      col += col3 * glow3;
+    col += col1 * glow1;
+    col += col2 * glow2;
+    col += col3 * glow3;
 
-      float r = length(p);
-      float vignette = smoothstep(0.6, 1.3, r);
-      col *= (1.0 - 0.45 * vignette);
+    col = pow(col, vec3(1.0 / 1.1));
+    col = clamp(col, 0.0, 1.0);
 
-      col = pow(col, vec3(1.0 / 1.1));
-      col = clamp(col, 0.0, 1.0);
-
-      gl_FragColor = vec4(col, 1.0);
-    }
-  `;
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
 
   function compile(type, src) {
     const sh = gl.createShader(type);

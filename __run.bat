@@ -4,6 +4,14 @@ chcp 65001 >nul
 
 pushd "%~dp0"
 
+set "USE_NOCACHE="
+set /p USE_NOCACHE="Ohne Cache builden? (j/N) "
+if /I "%USE_NOCACHE%"=="j" set "USE_NOCACHE=1"
+if /I "%USE_NOCACHE%"=="y" set "USE_NOCACHE=1"
+if defined USE_NOCACHE (
+  docker compose build --no-cache
+)
+
 docker compose up --build -d
 
 start "" "http://localhost:9091/?pgsql=db&username=dmsg3&db=dmsg3_db&ns=public"

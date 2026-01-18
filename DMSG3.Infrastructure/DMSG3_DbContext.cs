@@ -78,6 +78,23 @@ namespace DMSG3.Infrastructure
                 entity.Property(d => d.SummaryError)
                     .HasColumnName("summary_error");
 
+                entity.Property(d => d.VirusScanStatus)
+                    .HasColumnName("virus_scan_status")
+                    .HasDefaultValue(DocumentVirusScanStatus.NotScanned)
+                    .IsRequired();
+
+                entity.Property(d => d.VirusScanStartedAt)
+                    .HasColumnName("virus_scan_started_at");
+
+                entity.Property(d => d.VirusScanCompletedAt)
+                    .HasColumnName("virus_scan_completed_at");
+
+                entity.Property(d => d.VirusScanError)
+                    .HasColumnName("virus_scan_error");
+
+                entity.Property(d => d.VirusScanAnalysisId)
+                    .HasColumnName("virus_scan_analysis_id");
+
                 entity.Property(d => d.UploadTime)
                     .HasColumnName("upload_time")
                     .HasDefaultValueSql("now()");

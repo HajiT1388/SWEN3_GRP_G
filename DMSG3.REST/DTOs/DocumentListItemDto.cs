@@ -9,5 +9,8 @@ public record DocumentListItemDto(
     string OcrStatus,
     DateTime? OcrCompletedAt,
     string SummaryStatus,
-    DateTime? SummaryCompletedAt
+    DateTime? SummaryCompletedAt,
+    string? SummaryError,
+    string VirusScanStatus,
+    DateTime? VirusScanCompletedAt
 );

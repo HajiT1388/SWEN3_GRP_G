@@ -44,6 +44,7 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.Contains(docs, d => d.Name == "no");
         Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.OcrStatus)));
         Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.SummaryStatus)));
+        Assert.All(docs, d => Assert.False(string.IsNullOrWhiteSpace(d.VirusScanStatus)));
     }
 
     private static SeedDocument BuildSeedDocument(Guid? id, string name, string fileName, string content, string contentType = "text/plain; charset=utf-8")
@@ -108,6 +109,7 @@ public class DocumentsCrudEndpointTests : IClassFixture<TestWebApplicationFactor
         Assert.False(string.IsNullOrWhiteSpace(inDb.StorageObjectName));
         Assert.Equal(DocumentOcrStatus.Pending, inDb.OcrStatus);
         Assert.Equal(DocumentSummaryStatus.Pending, inDb.SummaryStatus);
+        Assert.Equal(DocumentVirusScanStatus.NotScanned, inDb.VirusScanStatus);
 
         Assert.True(_factory.DocumentStorage.TryGet(inDb.Id, out var storedBytes));
         Assert.Equal("123", Encoding.UTF8.GetString(storedBytes!));
