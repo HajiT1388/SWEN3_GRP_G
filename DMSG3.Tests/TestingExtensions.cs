@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DMSG3.Domain.Entities;
 using DMSG3.Infrastructure;
+using DMSG3.Infrastructure.Search;
 using DMSG3.Infrastructure.Storage;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +18,15 @@ public static class TestingExtensions
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<DMSG3_DbContext>();
         var storage = scope.ServiceProvider.GetRequiredService<IDocumentStorage>();
+        var searchIndex = scope.ServiceProvider.GetService<IDocumentSearchIndex>();
 
         if (storage is InMemoryDocumentStorage inMemory)
         {
             inMemory.Clear();
+        }
+        if (searchIndex is InMemoryDocumentSearchIndex inMemorySearch)
+        {
+            inMemorySearch.Clear();
         }
 
         await db.Database.EnsureDeletedAsync();
@@ -51,6 +57,22 @@ public static class TestingExtensions
             }
 
             await db.SaveChangesAsync();
+
+            if (searchIndex is not null)
+            {
+                foreach (var seed in docs)
+                {
+                    var entry = new DocumentSearchEntry
+                    {
+                        Id = seed.Document.Id,
+                        Name = seed.Document.Name,
+                        OriginalFileName = seed.Document.OriginalFileName,
+                        OcrText = seed.Document.OcrText
+                    };
+
+                    await searchIndex.IndexAsync(entry, CancellationToken.None);
+                }
+            }
         }
     }
 }

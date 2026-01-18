@@ -10,4 +10,5 @@ public class RabbitMqOptions
     public string OcrQueue { get; set; } = "dmsg3.ocr.queue";
     public string ResultQueue { get; set; } = "dmsg3.result.queue";
     public string SummaryQueue { get; set; } = "dmsg3.summary.queue";
+    public string IndexQueue { get; set; } = "dmsg3.index.queue";
 }

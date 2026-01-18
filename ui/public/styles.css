@@ -76,6 +76,10 @@ html, body {
   transition: border-color .2s, box-shadow .2s, transform .2s;
   animation: glassIn .35s ease-out both;
 }
+.glass-card.list-card {
+  width: min(96vw, 1200px);
+  padding: 22px 24px;
+}
 .glass-card:hover {
   border-color: var(--glass-border-strong);
   box-shadow: 0 12px 50px rgba(0,0,0,0.5);
@@ -199,6 +203,29 @@ html, body {
   font-size: 1rem;
   color: var(--text-dim);
   letter-spacing: .04em;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.search-row .field {
+  flex: 1 1 260px;
+  margin: 0;
+}
+.search-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.search-meta {
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 1.1em;
+  margin-bottom: 8px;
 }
 
 .field {
@@ -374,11 +401,13 @@ input[type="file"]:focus {
   letter-spacing: .06em;
   color: var(--text-dim);
   padding: 10px 12px;
+  text-align: left;
 }
 .table tbody td {
   padding: 12px;
   border-top: 1px solid rgba(255,255,255,0.08);
   vertical-align: top;
+  text-align: left;
 }
 .table tbody tr { transition: background .12s; }
 .table tbody tr:hover { background: rgba(255,255,255,0.04); }

@@ -1,10 +1,12 @@
 using DMSG3.Domain.Entities;
 using DMSG3.Domain.Messaging;
 using DMSG3.Infrastructure;
+using DMSG3.Infrastructure.Search;
 using DMSG3.Infrastructure.Storage;
 using DMSG3.REST.DTOs;
 using DMSG3.REST.Logging;
 using DMSG3.REST.Messaging;
+using Elastic.Clients.Elasticsearch;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -42,6 +44,19 @@ else
     builder.Services.AddDbContext<DMSG3_DbContext>(opt =>
         opt.UseNpgsql(builder.Configuration.GetConnectionString("Default"),
             o => o.EnableRetryOnFailure()));
+}
+
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddSingleton<IDocumentSearchIndex, InMemoryDocumentSearchIndex>();
+}
+else
+{
+    var elasticUri = builder.Configuration.GetConnectionString("ElasticSearch") ?? "http://localhost:9200";
+    var elasticSettings = new ElasticsearchClientSettings(new Uri(elasticUri))
+        .DefaultIndex(ElasticDocumentSearchIndex.IndexName);
+    builder.Services.AddSingleton(new ElasticsearchClient(elasticSettings));
+    builder.Services.AddSingleton<IDocumentSearchIndex, ElasticDocumentSearchIndex>();
 }
 
 builder.Services.AddEndpointsApiExplorer();
@@ -169,6 +184,69 @@ api.MapGet("/documents", async (DMSG3_DbContext db, ILoggerFactory lf, Cancellat
         .ToListAsync(ct);
 
     log.LogInformation("Dokumentenliste abgefragt. Count={Count}", items.Count);
+    return Results.Ok(items);
+});
+
+// GET /api/documents/search?q=...
+api.MapGet("/documents/search", async (
+    [FromQuery(Name = "q")] string? query,
+    DMSG3_DbContext db,
+    IDocumentSearchIndex searchIndex,
+    ILoggerFactory lf,
+    CancellationToken ct) =>
+{
+    var log = lf.CreateLogger("DocumentsSearch");
+    var term = (query ?? string.Empty).Trim();
+    if (string.IsNullOrWhiteSpace(term))
+    {
+        var allItems = await db.Documents
+            .AsNoTracking()
+            .OrderByDescending(d => d.UploadTime)
+            .Select(d => new DocumentListItemDto(
+                d.Id,
+                d.Name,
+                d.UploadTime,
+                d.SizeBytes,
+                d.ContentType,
+                d.OcrStatus,
+                d.OcrCompletedAt,
+                d.SummaryStatus,
+                d.SummaryCompletedAt
+            ))
+            .ToListAsync(ct);
+        return Results.Ok(allItems);
+    }
+
+    var hits = await searchIndex.SearchAsync(term, size: 100, ct);
+    if (hits.Count == 0)
+    {
+        return Results.Ok(Array.Empty<DocumentListItemDto>());
+    }
+
+    var ids = hits.Select(h => h.Id).ToList();
+    var docs = await db.Documents
+        .AsNoTracking()
+        .Where(d => ids.Contains(d.Id))
+        .ToListAsync(ct);
+
+    var scores = hits.ToDictionary(h => h.Id, h => h.Score ?? 0d);
+    var items = docs
+        .Select(d => new DocumentListItemDto(
+            d.Id,
+            d.Name,
+            d.UploadTime,
+            d.SizeBytes,
+            d.ContentType,
+            d.OcrStatus,
+            d.OcrCompletedAt,
+            d.SummaryStatus,
+            d.SummaryCompletedAt
+        ))
+        .OrderByDescending(d => scores.TryGetValue(d.Id, out var score) ? score : 0d)
+        .ThenByDescending(d => d.UploadTime)
+        .ToList();
+
+    log.LogInformation("Dokumentensuche. Query={Query} Treffer={Count}", term, items.Count);
     return Results.Ok(items);
 });
 
@@ -332,6 +410,17 @@ api.MapPost("/documents", async (
     catch (Exception ex)
     {
         log.LogError(ex, "Publish OCR_REQUEST fehlgeschlagen. Id={Id}", doc.Id);
+    }
+
+    var indexRequest = new IndexRequestMessage(doc.Id);
+    try
+    {
+        await publisher.PublishAsync("index.request", indexRequest, ct);
+        log.LogInformation("INDEX_REQUEST gepublished. Id={Id}", doc.Id);
+    }
+    catch (Exception ex)
+    {
+        log.LogError(ex, "Publish INDEX_REQUEST fehlgeschlagen. Id={Id}", doc.Id);
     }
 
     return Results.Created($"/api/documents/{doc.Id}", new { id = doc.Id });

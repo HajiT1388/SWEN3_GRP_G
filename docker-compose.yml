@@ -56,6 +56,34 @@ services:
       - "9091:8080"
     restart: unless-stopped
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.16.0
+    ports:
+      - "9200:9200"
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.16.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    restart: unless-stopped
+
   rest:
     build:
       context: .
@@ -67,8 +95,11 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     environment:
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
+      ConnectionStrings__ElasticSearch: "http://elasticsearch:9200"
       RabbitMq__HostName: "rabbitmq"
       RabbitMq__Port: 5672
       RabbitMq__UserName: "dmsg3"
@@ -77,6 +108,7 @@ services:
       RabbitMq__OcrQueue: "dmsg3.ocr.queue"
       RabbitMq__ResultQueue: "dmsg3.result.queue"
       RabbitMq__SummaryQueue: "dmsg3.summary.queue"
+      RabbitMq__IndexQueue: "dmsg3.index.queue"
       Minio__Endpoint: "minio:9000"
       Minio__AccessKey: "dmsg3dmsg3"
       Minio__SecretKey: "dmsg3dmsg3"
@@ -97,6 +129,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
       RabbitMq__HostName: "rabbitmq"
@@ -107,7 +141,9 @@ services:
       RabbitMq__OcrQueue: "dmsg3.ocr.queue"
       RabbitMq__ResultQueue: "dmsg3.result.queue"
       RabbitMq__SummaryQueue: "dmsg3.summary.queue"
+      RabbitMq__IndexQueue: "dmsg3.index.queue"
       ConnectionStrings__Default: "Host=db;Port=5432;Database=dmsg3_db;Username=dmsg3;Password=dmsg3"
+      ConnectionStrings__ElasticSearch: "http://elasticsearch:9200"
       Minio__Endpoint: "minio:9000"
       Minio__AccessKey: "dmsg3dmsg3"
       Minio__SecretKey: "dmsg3dmsg3"
@@ -161,3 +197,4 @@ services:
 volumes:
   dbdata:
   miniodata:
+  elasticsearch-data:

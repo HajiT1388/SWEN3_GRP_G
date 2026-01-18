@@ -164,25 +164,61 @@
   function renderList() {
     setTitle('list');
     root.innerHTML = `
-      <div class="glass-card">
+      <div class="glass-card list-card">
         <nav class="top-actions">
           <a class="link" href="./index.html">← Start</a>
           <a class="link" href="./new.html">Neu →</a>
         </nav>
 
         <h2 class="section-title">Dokumentenliste</h2>
+        <div class="search-row">
+          <div class="field">
+            <label class="lbl" for="searchInput">Suche</label>
+            <input id="searchInput" type="text" placeholder="Titel, Dateiname, OCR-Text..." />
+          </div>
+          <div class="search-actions">
+            <button id="clearBtn" class="btn ghost">Zurücksetzen</button>
+          </div>
+        </div>
+        <div id="searchHint" class="search-meta" role="status" aria-live="polite"></div>
         <div id="list" class="scroll-area" role="region" aria-label="Dokumentenliste"></div>
       </div>
     `;
 
     const listEl = root.querySelector('#list');
+    const searchInput = root.querySelector('#searchInput');
+    const clearBtn = root.querySelector('#clearBtn');
+    const searchHint = root.querySelector('#searchHint');
     let refreshHandle;
+    let debounceHandle;
+    let currentQuery = '';
 
-    const refresh = (silent = false) => loadDocs(listEl, silent);
+    const refresh = (silent = false) => loadDocs(listEl, currentQuery, searchHint, silent);
     refresh();
     refreshHandle = setInterval(() => refresh(true), 6000);
 
-    return () => clearInterval(refreshHandle);
+    const runSearch = () => {
+      currentQuery = (searchInput.value || '').trim();
+      refresh();
+    };
+
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      currentQuery = '';
+      refresh();
+    });
+    searchInput.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') runSearch();
+    });
+    searchInput.addEventListener('input', () => {
+      clearTimeout(debounceHandle);
+      debounceHandle = setTimeout(runSearch, 350);
+    });
+
+    return () => {
+      clearInterval(refreshHandle);
+      clearTimeout(debounceHandle);
+    };
   }
 
   function formatBytes(bytes) {
@@ -193,16 +229,25 @@
     return `${v.toFixed(v < 10 && i > 0 ? 1 : 0)} ${units[i]}`;
   }
 
-  async function loadDocs(listEl, silent = false) {
+  async function loadDocs(listEl, query, hintEl, silent = false) {
     if (!silent) listEl.innerHTML = '<div style="padding:12px;">Lädt...</div>';
     try {
-      const res = await fetch('/api/documents', { cache: 'no-store' });
+      const url = query
+        ? `/api/documents/search?q=${encodeURIComponent(query)}`
+        : '/api/documents';
+      const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error('Fehler beim Laden');
 
       const docs = await res.json();
       if (!Array.isArray(docs) || docs.length === 0) {
-        listEl.innerHTML = '<div style="padding:12px;"><em>Keine Dokumente vorhanden.</em></div>';
+        listEl.innerHTML = query
+          ? '<div style="padding:12px;"><em>Keine Treffer.</em></div>'
+          : '<div style="padding:12px;"><em>Keine Dokumente vorhanden.</em></div>';
+        if (hintEl) hintEl.textContent = query ? '0 Treffer' : '';
         return;
+      }
+      if (hintEl) {
+        hintEl.textContent = query ? `${docs.length} Treffer` : '';
       }
 
       const table = document.createElement('table');
@@ -256,7 +301,7 @@
           if (!confirm('Wirklich löschen?')) return;
           const r = await fetch(`/api/documents/${encodeURIComponent(id)}`, { method: 'DELETE' });
           if (r.status === 204) {
-            loadDocs(listEl);
+            loadDocs(listEl, query, hintEl);
           } else {
             alert('Löschen fehlgeschlagen');
           }
@@ -264,6 +309,7 @@
       });
     } catch (e) {
       listEl.innerHTML = `<div style="padding:12px;color:#ff9b9b;">${e.message || 'Unbekannter Fehler'}</div>`;
+      if (hintEl) hintEl.textContent = '';
     }
   }
 

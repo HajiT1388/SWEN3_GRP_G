@@ -121,7 +121,7 @@ public class OcrRequestHandlerTests
 
         await Assert.ThrowsAsync<InvalidOperationException>(() => handler.ProcessAsync(message, CancellationToken.None));
         Assert.Equal(DocumentSummaryStatus.Failed, doc.SummaryStatus);
-        Assert.Equal("OCR fehlgeschlagen, keine Zusammenfassung.", doc.SummaryError);
+        Assert.Equal("OCR fehlgeschlagen; keine Summary.", doc.SummaryError);
     }
 
     private sealed class FakeOcrEngine : IOcrEngine

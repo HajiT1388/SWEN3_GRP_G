@@ -76,6 +76,12 @@ public class Worker : BackgroundService
                     _ch.QueueBind(_opt.SummaryQueue, _opt.Exchange, routingKey: "summary.request");
                 }
 
+                if (!string.IsNullOrWhiteSpace(_opt.IndexQueue))
+                {
+                    _ch.QueueDeclare(_opt.IndexQueue, durable: true, exclusive: false, autoDelete: false);
+                    _ch.QueueBind(_opt.IndexQueue, _opt.Exchange, routingKey: "index.request");
+                }
+
                 _ch.BasicQos(0, 1, false);
 
                 var consumer = new AsyncEventingBasicConsumer(_ch);
@@ -137,6 +143,7 @@ public class Worker : BackgroundService
             if (string.Equals(result.Status, DocumentOcrStatus.Completed, StringComparison.OrdinalIgnoreCase))
             {
                 PublishSummaryRequest(result.DocumentId);
+                PublishIndexRequest(result.DocumentId);
             }
         }
     }
@@ -175,6 +182,23 @@ public class Worker : BackgroundService
         var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message, _serializerOptions));
         _ch.BasicPublish(_opt.Exchange, "summary.request", props, bytes);
         _log.LogInformation("SUMMARY_REQUEST gesendet. Dokument={DocumentId}", documentId);
+    }
+
+    private void PublishIndexRequest(Guid documentId)
+    {
+        if (_ch is null) return;
+        if (string.IsNullOrWhiteSpace(_opt.IndexQueue))
+        {
+            _log.LogWarning("IndexQueue ist nicht konfiguriert. DocumentId={DocumentId}", documentId);
+            return;
+        }
+
+        var message = new IndexRequestMessage(documentId);
+        var props = _ch.CreateBasicProperties();
+        props.Persistent = true;
+        var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message, _serializerOptions));
+        _ch.BasicPublish(_opt.Exchange, "index.request", props, bytes);
+        _log.LogInformation("INDEX_REQUEST gesendet. Dokument={DocumentId}", documentId);
     }
 
     public override void Dispose()

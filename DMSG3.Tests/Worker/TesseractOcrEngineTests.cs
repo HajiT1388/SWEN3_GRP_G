@@ -33,7 +33,7 @@ public class TesseractOcrEngineTests
         {
             var text = await engine.RecognizePdfAsync(pdfPath, CancellationToken.None);
             Assert.Equal("tesseract-output-page-001\ntesseract-output-page-002", text.Replace("\r\n", "\n"));
-            Assert.Equal(3, runner.Calls.Count); // 1x Ghostscript und 2x tesseract
+            Assert.Equal(3, runner.Calls.Count); // GS TS TS
         }
         finally
         {

@@ -85,7 +85,7 @@ public class OcrRequestHandler
             doc.OcrError = ex.Message;
             doc.OcrCompletedAt = DateTime.UtcNow;
             doc.SummaryStatus = DocumentSummaryStatus.Failed;
-            doc.SummaryError = "OCR fehlgeschlagen, keine Zusammenfassung.";
+            doc.SummaryError = "OCR fehlgeschlagen; keine Summary.";
             doc.SummaryCompletedAt = DateTime.UtcNow;
             doc.SummaryText = null;
             await _db.SaveChangesAsync(ct);
